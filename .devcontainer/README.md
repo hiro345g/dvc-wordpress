@@ -1,6 +1,6 @@
 # .devcontainer
 
-このフォルダには、VS Code Dev Container の設定ファイルが含まれています。
+このフォルダには、`VS Code Dev Container` の設定ファイルが含まれています。
 
 ## フォルダ構成
 
