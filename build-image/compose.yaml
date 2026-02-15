@@ -1,0 +1,9 @@
+name: dvc-wordpress-build
+services:
+  dvc-wordpress-build:
+    build:
+      context: ../
+      dockerfile: ./build-image/Dockerfile
+    image: dvc-wordpress:php-202602
+    container_name: dvc-wordpress-build
+    hostname: dvc-wordpress-build

@@ -1,0 +1,17 @@
+AuthType Basic
+AuthName "Restricted Area"
+AuthUserFile /home/node/workspace/php/.htpasswd
+Require valid-user
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # 物理的なファイルやディレクトリが存在しない場合のみ実行
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # フォルダ名を書かずに、現在の階層の index.php へ飛ばす
+    # (先頭にスラッシュをつけないのがポイント)
+    # RewriteRule ^(.*)$ index.php [L]
+    RewriteRule . index.php [L]
+</IfModule>

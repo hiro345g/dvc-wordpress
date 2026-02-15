@@ -1,0 +1,12 @@
+{
+    "name": "dvc-wordpress",
+    "dockerComposeFile": [
+        "../compose.yaml"
+    ],
+    "service": "dvc-wordpress-build",
+    "workspaceFolder": "/home/node/workspace"
+    // "features": {
+    //     "ghcr.io/devcontainers-extra/features/mysql-homebrew:1": {}
+    // }
+
+}
