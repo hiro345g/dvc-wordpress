@@ -248,13 +248,13 @@ docker compose -p dvc-wordpress exec php-apache
 
 `dvc-wordpress` 開発コンテナーの `VS Code` 環境を使用せず、`WordPress` 実行環境である `php-apache` コンテナー群を単独で起動・運用する代替手段です。
 
-次の特徴があります
+次の特徴があります。
 
 - リソースの最適化: `dvc-wordpress` 開発コンテナーが不要な場合（例：ホストマシンからの CLI 操作、CI/CD環境での利用など）、`php-apache` サービスのみを起動することでリソース消費を抑えることができます。
 - 柔軟な環境構築: `dvc-wordpress` を起動せずに `WordPress` 環境を構築したい場合に、`php-apache/compose.yaml` をベースとして利用できます。
 - 操作の分離: `WordPress` のソースコード編集はコンテナー内で行えますが、`docker compose up/down` などのコンテナー自体の操作は、ホストPCのターミナルから実行する必要があります。
 
-主な用途:**
+主な用途は次のとおり。
 
 - ホストマシンからの `wp-cli` コマンド実行
 - CI/CD 環境でのテスト実行
