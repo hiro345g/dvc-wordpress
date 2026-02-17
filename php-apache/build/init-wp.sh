@@ -1,11 +1,12 @@
-#!  /bin/bash
+#! /bin/bash
 
 PLUGINS="${PLUGIN_LIST:-all-in-one-wp-migration backwpup query-monitor}"
 WP_RESET="${RESET:-TRUE}"
 
 echo "Setting up WordPress"
-SCRIPT_DIR=$(dirname "$0")
-DATA_DIR=$(cd "${SCRIPT_DIR}/data" || exit 1; pwd)
+SCRIPT_DIRNAME=$(dirname "$0")
+SCRIPT_DIR=$(cd "${SCRIPT_DIRNAME}" || exit 1; pwd)
+DATA_DIR="${SCRIPT_DIR}/data"
 WORK_DIR=${WEB_ROOT_DIR:-/var/www/html}
 
 cd "${WORK_DIR}" || exit 1;
@@ -17,9 +18,15 @@ wp core download --locale=ja
 if [ "${WP_RESET}" = "TRUE" ]; then
     echo "---- reset"
     # shellcheck disable=SC2086
-    wp plugin delete $PLUGINS
-    wp db reset --yes
-    rm wp-config.php;
+    if [ -e "${WORK_DIR}/wp-config.php" ]; then
+        for p in $PLUGINS; do
+            if [ -e "${WORK_DIR}/wp-content/plugins/${p}" ]; then
+                wp plugin delete "${p}"
+            fi
+        done
+        wp db reset --yes
+        rm wp-config.php;
+    fi
 fi
 
 # 初期設定

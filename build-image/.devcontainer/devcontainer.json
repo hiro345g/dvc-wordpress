@@ -1,0 +1,8 @@
+{
+    "name": "dvc-wordpress",
+    "dockerComposeFile": [
+        "../compose.yaml"
+    ],
+    "service": "dvc-wordpress-build",
+    "workspaceFolder": "/home/node/workspace"
+}

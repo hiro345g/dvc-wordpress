@@ -2,9 +2,8 @@ name: dvc-wordpress
 services:
   # 開発コンテナー
   dvc-wordpress:
-    # hiro345g/dvc:php-202507 イメージ作成用の Dockerfile, devcontainer.json は下記を参照すること
-    # https://github.com/hiro345g/dvc/tree/2f59d0c75da15fbb5fd94eabc24708239a386253/dvc-php/build
-    image: hiro345g/dvc:php-202507
+    image: dvc-wordpress:php-202602
+    # image: hiro345g/dvc:php-202602
     container_name: dvc-wordpress
     hostname: dvc-wordpress
     init: true
@@ -14,9 +13,22 @@ services:
     networks:
       dvc-net:
     volumes:
-      - mise-data:/home/node/.local/share/mise
-      - workspace-data:/home/node/workspace
-      - vscode-server-extensions:/home/node/.vscode-server/extensions
+      - type: volume
+        source: node-local-share-mise
+        target: /home/node/.local/share/mise
+      - type: volume
+        source: node-local-state-mise
+        target: /home/vscode/.local/state/mise
+      - type: volume
+        source: workspace-data
+        target: /home/node/workspace
+      - type: volume
+        source: vscode-server-extensions
+        target: /home/node/.vscode-server/extensions
+      - type: bind
+        source: ${PROJECT_DIR:-.}
+        target: /dvc-wordpress
+        read_only: true
       - type: bind
         source: ${PROJECT_DIR:-.}/php-apache
         target: /php-apache
@@ -30,14 +42,70 @@ services:
       EDITOR: code
       NPM_CONFIG_USERCONFIG: ${NPM_CONFIG_USERCONFIG:-/home/node/.npmrc}
 
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: nginx-proxy
+    # network_mode: service:dvc-wordpress を使うと `hostname:` は指定できない。
+    network_mode: service:dvc-wordpress
+    command: >
+      sh -c "printf 'events { worker_connections 1024; }
+      stream {
+          server { listen 5080; proxy_pass php-apache-adminer:8080; }
+          server { listen 8080; proxy_pass php-apache:80; }
+          server { listen 13306; proxy_pass php-apache-mysql:3306; }          
+      }' > /tmp/nginx_stream.conf && nginx -c /tmp/nginx_stream.conf -g 'daemon off;'"
+    depends_on:
+      php-apache-adminer:
+        condition: service_started
+      php-apache:
+        condition: service_started
+      php-apache-mysql:
+        condition: service_healthy
+    # wordpress のネットワークスタックを共有しているため、`networks:` の指定なし
+    # nginx-proxy サービス自身は、dvc-net に直接参加する必要なし
+
+  php-apache:
+    volumes:
+      - type: volume
+        source: workspace-data
+        target: /home/node/workspace
+    networks:
+      dvc-net:
+    ports:
+      - ${PHP_IP_PORT:-127.0.0.1:8080}:80
+      - ${PHP_BUILT_IN_IP_PORT:-127.0.0.1:10080}:10080
+
+  php-apache-mysql:
+    networks:
+      dvc-net:
+    ports:
+      - ${MYSQL_IP_PORT:-127.0.0.1:13306}:3306
+
+  php-apache-adminer:
+    networks:
+      dvc-net:
+    ports:
+      - ${ADMINER_IP_PORT:-127.0.0.1:5080}:8080
+
 volumes:
-  mise-data:
-    name: dvc-mise-data
+  node-local-share-mise:
+    name: dvc-wordpress-node-local-share-mise
+  node-local-state-mise:
+    name: dvc-wordpress-node-local-state-mise
   workspace-data:
-    name: dvc-node-workspace-data
+    name: dvc-wordpress-home-node-workspace-data
   vscode-server-extensions:
-    name: dvc-vscode-server-extensions
+    name: dvc-wordpress-vscode-server-extensions
+  php-apache-data:
+    name: dvc-wordpress-php-apache-data
+    external: true
+  php-apache-mysql-data:
+    name: dvc-wordpress-php-apache-mysql-data
+    external: true
 
 networks:
   dvc-net:
     name: dvc-wordpress-net
+
+include:
+  - ./php-apache/php-apache-core/compose.yaml

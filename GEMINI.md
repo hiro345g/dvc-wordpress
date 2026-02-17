@@ -10,6 +10,7 @@ Dev Container により、開発者全員が統一された `PHP`、`Apache`、`
 
 開発を始める前に、お使いの PC に以下のツールがインストールされている必要があります。
 
+- [Node.js](https://nodejs.org/ja/)
 - `Docker`
   - [Docker Engine](https://docs.docker.com/engine/)
   - [Docker Compose](https://docs.docker.com/compose/)
@@ -33,13 +34,34 @@ Dev Container により、開発者全員が統一された `PHP`、`Apache`、`
 - `dvc-wordpress`: `PHP` のコード開発、単体 `PHP` プログラムの実行用環境
 - `php-apache`: `Apache` + `WordPress` の実行環境と必要な `Apache` モジュール、`PHP` モジュールのインストールがされた環境
 
+開発コンテナー用イメージのビルド、WordPress コンテナー用イメージのビルド、Docker オブジェクトの初期化のために、以下のコマンドを順番に実行します。これは `dvc-wordpress` 開発コンテナーを起動する前の準備として行います。
+
+```bash
+cd ${PROJECT_DIR}
+bash ./build-image/build.sh
+bash ./php-apache/build/build.sh
+bash ./php-apache/script/up.sh
+bash ./php-apache/script/down.sh
+```
+
+このコマンドブロックには、`php-apache`が単体で動作するかを確認するテストが含まれています。必須ではありませんが、事前に行うと問題の切り分けに役立ちます。
+
+それでは、説明します。
+
 ### 3.1. **`VS Code` でプロジェクトを開く**
 
 このリポジトリをクローンした後、`VS Code` で `dvc-wordpress` のプロジェクトのルートフォルダを開きます。これ以降、このルートフォルダを `${PROJECT_DIR}` とします。
 
-### 3.2. **初回セットアップ**
+### 3.2. 必要な Docker イメージのビルドと初回セットアップ
 
-初めて開発コンテナーを起動する前に、`php-apache/build/build.sh` スクリプトを実行して、`WordPress` 開発用のコンテナー向けの `Docker` イメージ `dvc-wordpress:php-apache` をビルドします。すると、以下の初期設定が自動的に行われた `Docker` イメージが用意できます。
+初めて開発コンテナーを起動する前に、開発コンテナー用イメージ (`dvc-wordpress:php-202602`) のビルドが必要です。
+
+```bash
+cd ${PROJECT_DIR}
+bash ./build-image/build.sh
+```
+
+また、`WordPress` 開発用のコンテナー向けの `Docker` イメージ `dvc-wordpress:php-apache` をビルドします。ビルドには `php-apache/build/build.sh` スクリプトを使用するのが主要な方法です。このビルドにより、以下の初期設定が自動的に行われた `Docker` イメージが用意できます。
 
 - `Apache` の設定
 - `WordPress` サイトの初期化ができる環境
@@ -50,38 +72,13 @@ cd ${PROJECT_DIR}
 bash ./php-apache/build/build.sh
 ```
 
-シェルが使えない環境では `docker compose build` コマンドを使ってビルドします。
-
-```bash
-cd ${PROJECT_DIR}
-cd php-apache
-cd build
-docker compose build
-```
-
 カスタマイズする場合は、`build` にある `Dockerfile` や関連ファイルを修正して使います。
 
-ビルドが成功したら、動作確認をしておきます。
-
-使用する `Docker` ネットワークの `dvc-wordpress-net` がない場合は作成しておきます。このネットワークは `dvc-wordpress` によって用意されるようにしてあるので、`dvc-wordpress` 開発コンテナーを破棄すると自動で削除される点に注意してください。また、自作した場合は動作確認をした後に削除しておかないと、`dvc-wordpress` 起動時に衝突します。
-
-```bash
-docker network create dvc-wordpress-net
-```
-
-それから、`Docker Compose` プロジェクトの `php-apache` 向けサービスを起動。
+ビルドが成功したら、`Docker Compose` プロジェクトの `php-apache` 向けサービスを起動します。これで、このプロジェクトで使用する Docker オブジェクトの初期化がされます。
 
 ```bash
 cd ${PROJECT_DIR}
 bash ./php-apache/script/up.sh
-```
-
-シェルが使えない環境では `docker compose up` コマンドを使います。
-
-```bash
-cd ${PROJECT_DIR}
-cd php-apache
-docker compose up -d
 ```
 
 `docker compose ls` コマンドで、`php-apache` プロジェクトが `running` となっていることを確認します。`grep` コマンドが使えない環境の場合は、一覧表示される中から該当する行を探してください。
@@ -97,23 +94,14 @@ $ docker compose ls | grep php-apache
 php-apache    running(3)    （略）/dvc-wordpress/php-apache/compose.yaml
 ```
 
-起動が成功していたら、停止します。また、Docker ネットワーク `dvc-wordpress-net` を `docker network create` で作成してあった場合は `docker network rm` で削除しておきます。
+起動が成功していたら、停止します。
 
 ```bash
 cd ${PROJECT_DIR}
 bash ./php-apache/script/down.sh
-docker network rm dvc-wordpress-net
 ```
 
-シェルが使えない環境では `docker compose down` コマンドを使います。
-
-```bash
-cd ${PROJECT_DIR}
-cd php-apache
-docker compose down
-```
-
-### 3.3. **`Dev Container` の起動**
+### 3.4. **`Dev Container` の起動**
 
 `Dev Container` の起動方法はいくつかあります。次のどれかで `Dev Container` を起動します。
 
@@ -121,17 +109,30 @@ docker compose down
 - コマンドパレット (`Ctrl+Shift+P` または `Cmd+Shift+P`) を開き、「開発コンテナー：コンテナーで再度開く（`Dev Containers: Reopen in Container`）」を表示してクリック
 - `VS Code` の左下角の部分をクリックすると表示されるメニューで「コンテナーで再度開く」をクリック
 
-### 3.4. **`WordPress` 実行環境の起動**
+いずれかの方法で `dvc-wordpress` 開発コンテナーを起動すると、`WordPress` 実行環境である `php-apache` および関連するデータベースサービス（MySQL）が自動的に起動します。
 
-`Dev Container` 内のターミナルで、以下のコマンドを実行して `WordPress` 環境（Webサーバーとデータベース）を起動します。
+### 3.5. **`WordPress` 実行環境の起動確認**
+
+次のコマンドを実行して `WordPress` 環境（Webサーバーとデータベース）の起動を確認します。
 
 ```bash
-/php-apache/script/up.sh
+$ docker container ls --format "{{.Names}}" | grep php-apache
+php-apache-adminer
+php-apache
+php-apache-mysql
 ```
 
-### 3.5. **`WordPress` サイトの初期設定**
+開発用のフォルダを作成します。
 
-起動した `php-apache` コンテナーへアタッチして、`WordPress` サイトの初期設定をします。このとき、デバッグ機能を無効化しておくと、余計なメッセージが表示されなくなります。デバッグ機能の無効化については、後述する `5. デバッグ - 5.1. デバッグ機能の無効化` を参照してください。
+```bash
+docker compose -p dvc-wordpress exec php-apache bash -c "\
+    if [ ! -e /home/node/workspace/php/html/ ]; then mkdir -p /home/node/workspace/php/html/; fi \
+"
+```
+
+### 3.6. **`WordPress` サイトの初期設定**
+
+起動した `dvc-wordpress` 開発コンテナー内から `php-apache` サービスに対して、`WordPress` サイトの初期設定をします。このとき、デバッグ機能を無効化しておくと、余計なメッセージが表示されなくなります。デバッグ機能の無効化については、後述する `5. デバッグ - 5.1. デバッグ機能の無効化` を参照してください。
 
 `WordPress` サイトの初期設定をするには、次の作業が必要です。
 
@@ -139,49 +140,58 @@ docker compose down
 - `wp-config.php` の生成
 - プラグインのインストールと初期設定
 
-起動した `php-apache` コンテナーにアタッチして作業します。
+次のコマンドを実行して必要なファイルをコピーします。
 
 ```bash
-docker compose -p php-apache exec php-apache bash
-```
-
-ここから `php-apache` コンテナーでの作業になります。次のコマンドを実行します。
-
-```bash
-cp /var/www/html/init-wp.sh /home/node/workspace/php/html/
-cp /var/www/html/html.code-workspace /home/node/workspace/php/html/
+docker compose -p dvc-wordpress exec php-apache bash -c "\
+    cp /var/www/html/init-wp.sh /home/node/workspace/php/html/ \
+"
+docker compose -p dvc-wordpress exec php-apache bash -c "\
+    cp /var/www/html/html.code-workspace /home/node/workspace/php/html/ \
+"
 ```
 
 それから、`init-wp.sh` を実行して、`WordPress` とプラグインをインストールし、それから初期化もします。
 
 ```bash
-cd /home/node/workspace/php/html/
-WEB_ROOT_DIR=$(pwd) bash init-wp.sh
+docker compose -p dvc-wordpress exec php-apache bash -c '\
+    cd /home/node/workspace/php/html/ && WEB_ROOT_DIR=$(pwd) bash init-wp.sh \
+'
 ```
 
 `WordPress` の初期化についてカスタマイズをしたい場合は `init-wp.sh` を修正してください。ここでは、`all-in-one-wp-migration`、`backwpup`、`query-monitor` のプラグインをインストールしてあります。
 
-作業が終了したら、`Dev Container` 内のターミナルで、以下のコマンドを実行して `WordPress` 環境（Webサーバーとデータベース）を破棄します。コンテナーを破棄した時の影響について、確認しておきましょう。
+作業が終了したら、`Dev Container` 内のターミナルで、以下のコマンドを実行して `WordPress` 環境（Webサーバーとデータベース）の確認をします。
 
 ```bash
-/php-apache/script/down.sh
+docker compose -p dvc-wordpress exec dvc-wordpress curl -L -s http://localhost:8080/ | grep "<title>DevSite</title>"
+```
+
+次のように `<title>DevSite</title>` が表示されたら成功です。
+
+```bash
+$ docker compose -p dvc-wordpress exec dvc-wordpress curl -L -s http://localhost:8080/ | grep "<title>DevSite</title>"
+<title>DevSite</title>
 ```
 
 参考までに、`WordPerss` 用のデータは、次の `Docker` ボリュームに保存されています。
 
 - `dvc-wordpress-php-apache-mysql-data` ... DB のデータ
-- `dvc-node-workspace-data` ... `php/html` フォルダに `WordPress` のファイル
+- `dvc-wordpress-home-node-workspace-data` ... `php/html` フォルダに `WordPress` のファイル
 
 なお、`WordPress` を初期化したい場合は、`init-wp.sh` を再実行します。開発するプログラムによっては、完全な初期化をせずにしたい場合もあるでしょう。その場合は、`init-wp.sh` を修正して使うようにしてください。
 
 ## 4. 開発
 
+dvc-wordpress を起動して開発している前提で説明します。
+
 ### 4.1. `WordPress` 環境の開始
 
-作業を開始する際は、`Dev Container` 内のターミナルで以下のコマンドを実行して、`WordPress` 環境を起動してください。
+`dvc-wordpress` 開発コンテナーの起動時に `WordPress` 環境 (`php-apache` サービス) は自動的に起動するため、通常このコマンドは不要です。もし開発中に意図的にサービスを停止した場合は、次のコマンドを実行して再度 `WordPress` 環境を起動してください。
 
 ```bash
-/php-apache/script/up.sh
+docker compose -p dvc-wordpress exec dvc-wordpress \
+    sh /script/php-apache/start.sh
 ```
 
 ### 4.2. `WordPress` サイトへのアクセス
@@ -195,14 +205,15 @@ WEB_ROOT_DIR=$(pwd) bash init-wp.sh
 
 ### 4.3. ファイルの編集
 
-`WordPress` のソースコードは `Docker` ボリュームの `dvc-node-workspace-data` 内の `php/html` フォルダに保存されます。これは、`dvc-wordpress` 開発コンテナーと `php-apache` コンテナーの両方から `/home/node/workspace/php/html/` のパスでアクセスできるようになっています。このフォルダ内のファイルを編集すると、すぐに `Web` サイトに反映されます。
+`WordPress` のソースコードは `Docker` ボリュームの `dvc-wordpress-home-node-workspace-data` 内の `php/html` フォルダに保存されます。これは、`dvc-wordpress` 開発コンテナーと `php-apache` コンテナーの両方から `/home/node/workspace/php/html/` のパスでアクセスできるようになっています。このフォルダ内のファイルを編集すると、すぐに `Web` サイトに反映されます。
 
 ### 4.4. `WordPress` 環境の停止
 
-作業を終了する際は、`Dev Container` 内のターミナルで以下のコマンドを実行して、`WordPress` 環境を停止してください。
+`dvc-wordpress` 開発コンテナーを終了すれば、`WordPress` 環境 (`php-apache` サービス) も自動的に停止します。開発コンテナーを起動したまま、一時的に `WordPress` 環境のみを停止したい場合は、次のコマンドを実行してください。
 
 ```bash
-/php-apache/script/down.sh
+docker compose -p dvc-wordpress exec php-apache \
+    sh /script/php-apache/stop.sh
 ```
 
 ## 5. デバッグ
@@ -214,9 +225,9 @@ WEB_ROOT_DIR=$(pwd) bash init-wp.sh
 `php-apache` で `PHP` のプログラムを実行するときに、デバッグ機能が有効になっていてデバッガが起動していないと、デバッグ関連の警告やエラーのメッセージが表示されてしまいます。これを抑制するには、次のコマンドを実行してデバッグ機能を無効化します。
 
 ```bash
-docker compose -p php-apache exec php-apache \
+docker compose -p dvc-wordpress exec php-apache \
     mv /usr/local/etc/php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini.disabled
-docker compose -p php-apache exec php-apache \
+docker compose -p dvc-wordpress exec php-apache \
     kill -HUP 1
 ```
 
@@ -225,7 +236,7 @@ docker compose -p php-apache exec php-apache \
 デバッグ機能が無効化できたが確認するには、`php-apache` コンテナー内で `php --ini` コマンドを実行します。表示される一覧に `xdebug.ini` を含む行がなければ無効化できています。
 
 ```bash
-docker compose -p php-apache exec php-apache \
+docker compose -p dvc-wordpress exec php-apache \
     php --ini
 ```
 
@@ -234,9 +245,9 @@ docker compose -p php-apache exec php-apache \
 デバッグ機能を有効化するには無効化の逆の手順を踏みます。具体的には次のコマンドを実行します。
 
 ```bash
-docker compose -p php-apache exec php-apache \
+docker compose -p dvc-wordpress exec php-apache \
     mv /usr/local/etc/php/conf.d/xdebug.ini.disabled /usr/local/etc/php/conf.d/xdebug.ini
-docker compose -p php-apache exec php-apache \
+docker compose -p dvc-wordpress exec php-apache \
     kill -HUP 1
 ```
 
@@ -245,7 +256,7 @@ docker compose -p php-apache exec php-apache \
 次に `php --ini` 実行例を示します。この例ではデバッグ機能は有効化されていて、`xdebug.ini` を含む行が表示されていて、この設定が読み込まれていることがわかります。無効化したときは、この行は一覧に表示されません。
 
 ```bash
-$ docker compose -p php-apache exec php-apache php --ini
+$ docker compose -p dvc-wordpress exec php-apache php --ini
 Configuration File (php.ini) Path: /usr/local/etc/php
 Loaded Configuration File:         /usr/local/etc/php/php.ini
 Scan for additional .ini files in: /usr/local/etc/php/conf.d
@@ -268,7 +279,7 @@ Additional .ini files parsed:      /usr/local/etc/php/conf.d/docker-php-ext-bcma
 `x86_64` 版の `dbgpClient` が `Docker` イメージには含まれます。`php-apache` 起動後に、`dvc-wordpress` で使いたいときはコピーして使えます。
 
 ```bash
-docker compose -p php-apache \
+docker compose -p dvc-wordpress \
     cp php-apache:/usr/local/bin/dbgpClient ./dbgpClient
 ```
 
@@ -303,9 +314,23 @@ dvc-wordpress/
 ├── .devcontainer/
 │   ├── devcontainer.json        # Dev Container用設定ファイル
 │   └── script/
-│       └── init.sh               # Dev Container 初期化スクリプト
+│       ├── init.sh               # Dev Container 初期化スクリプト
+│       └── php-apache/           # Dev Container 利用時の php-apache 用スクリプト
+│           ├── start.sh
+│           └── stop.sh
 ├── GEMINI.md                      # この開発ガイド
 ├── README.md                      # プロジェクトの README
+├── app001/                        # WordPress フォルダ内に PHP アプリケーションをデプロイするサンプル用プログラム
+│   └── webroot/
+│       ├── .htaccess
+│       ├── app001/
+│       │   ├── .htaccess
+│       │   ├── index.php         # アプリケーションのエントリポイント
+│       │   ├── info.php          # PHP 情報表示ファイル
+│       │   └── static/
+│       │       ├── style.css     # 静的ファイルの共通スタイルシート
+│       │       ├── index.html    # 静的ファイルのインデックスページ
+│       │       └── sample.html   # 静的ファイルのサンプルページ
 ├── compose.yaml                   # Dev Container を起動するための Docker Compose ファイル
 ├── php-apache/                    # WordPress 実行環境 (Apache, PHP, MySQL) の設定
 │   ├── build/                    # php-apache コンテナーの Docker イメージをビルドするための設定
@@ -318,9 +343,13 @@ dvc-wordpress/
 │   │   ├── html.code-workspace  # dvc-wordpress:/home/node/workspace/php/html/ に置いて使うワークスペースファイルの例
 │   │   ├── sample.env           # ビルド時の環境設定ファイルのサンプル
 │   │   └── usr_local_etc_php/   # PHP の設定ファイル
-│   ├── compose.yaml              # WordPress, DB, Mailpit の定義
+│   ├── compose.yaml              # dvc-wordpress を使わないときに WordPress, DB 用サービスを利用するときに使用
+│   ├── php-apache-core/
+│   │    └── compose.yaml        # WordPress, DB 用サービスの定義
 │   └── script/                   # php-apache 環境の起動・停止スクリプト
 │       ├── down.sh
+│       ├── start.sh
+│       ├── stop.sh
 │       └── up.sh
 └── workspace_share/               # 開発コンテナーとホストで共有するフォルダ
 ```

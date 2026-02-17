@@ -1,0 +1,42 @@
+# BEGIN DevSite app001
+<IfModule mod_rewrite.c>
+# WordPress の設定により、自動で有効になったり無効になったりするので、明示的に最初に指定が必要。
+# 複数回指定しても問題ない。
+RewriteEngine On
+
+RewriteRule ^app001/ - [L]
+
+# ---- app001/.htaccess がない場合の設定ここから
+# 1. app001/index.php 自体へのアクセスはそのまま通す（無限ループ防止）
+# RewriteRule ^app001/index\.php$ - [L]
+
+# 2. app001/ 配下へのアクセスで、実在しないファイル/フォルダへのリクエストをすべて app001/index.php に集約
+# RewriteCond %{REQUEST_URI} ^/app001/ [NC]
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule ^app001/.* /app001/index.php [L]
+
+# 3. 実在するファイル（画像、CSS、既存のPHP）なら、そのまま WordPress に渡さず終了
+# RewriteRule ^app001/.* - [L]
+# ---- ここまで
+
+# さくらインターネット用設定（既存）
+RewriteCond %{HTTP_HOST} ^(www\.)?[^.]+\.sakura\.ne\.jp$ [NC]
+RewriteRule .* - [NC,R=404,L]
+</IfModule>
+# END DevSite app001
+
+# BEGIN WordPress
+# "BEGIN WordPress" から "END WordPress" までのディレクティブ (行) は
+# 動的に生成され、WordPress フィルターによってのみ修正が可能です。
+# これらのマーカー間にあるディレクティブへのいかなる変更も上書きされてしまいます。
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+# END WordPress
