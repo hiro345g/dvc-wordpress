@@ -60,6 +60,7 @@ sudo apt-get install -y --no-install-recommends \
     ~/.local/bin/mise install -y -v php@8.2.30; \
 '
 
+# mise のグローバル設定ファイルの追加
 if [ ! -e /home/node/.config/mise/ ]; then
     mkdir -p /home/node/.config/mise/
 fi

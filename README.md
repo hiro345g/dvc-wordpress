@@ -5,10 +5,6 @@ dvc-wordpress プロジェクトは、使いやすい開発コンテナー dvc-w
 
 開発者全員が `PHP`、`Apache`、`Xdebug` などを含む統一された実行環境を簡単に利用できるため、環境差異による問題を解消し、開発に集中できます。
 
-これを使った WordPress の開発についての解説記事を次の URL で公開しています。
-
-- [PHP 開発環境と実行環境を統合して WordPress 開発を効率化](https://zenn.dev/hiro345/articles/20250719_dvc_wordpress)
-
 ## 1. 主な特徴
 
 dvc-worpdress は、`Docker` と `Dev Container` により、OS に依存しない一貫した開発環境を提供します（統一された開発環境）。
@@ -48,7 +44,6 @@ dvc-worpdress は、`Docker` と `Dev Container` により、OS に依存しな�
 
 また、次の `VS Code` 拡張機能もインストールしておいてください。
 
-- [Docker](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker)
 - [Container Tools](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-containers)
 - [Docker DX](https://marketplace.com/items?itemName=docker.docker)
 - [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
@@ -271,7 +266,63 @@ docker compose -p dvc-wordpress exec php-apache
 
 プロジェクトのフォルダ構成に関する詳細については、`GEMINI.md` の「6. フォルダ構成」セクションを参照してください。
 
-## 6. 詳細ガイド
+## 6. composer アップデート
+
+`composer diagnose` を実行すると、Composer の動作チェックができます。
+
+```bash
+composer diagnose
+```
+
+成功すると次のような結果となります。
+
+```bash
+node ➜ ~/workspace $ composer diagnose
+Checking pubkeys: 
+Tags Public Key Fingerprint: 57815BA2 7E54DC31 7ECC7CC5 573090D0  87719BA6 8F3BB723 4E5D42D0 84A14642
+Dev Public Key Fingerprint: 4AC45767 E5EC2265 2F0C1167 CBBB8A2B  0C708369 153E328C AD90147D AFE50952
+OK
+Checking Composer version: OK
+Composer version: 2.9.5
+Checking Composer and its dependencies for vulnerabilities: OK
+PHP version: 8.2.30
+PHP binary path: /home/node/.local/share/mise/installs/php/8.2.30/bin/php
+OpenSSL version: OpenSSL 3.5.4 30 Sep 2025
+curl version: 8.14.1 libz 1.3.1 brotli brotli/1.1.0 zstd supported ssl OpenSSL/3.5.4 HTTP 1.0, 1.1, 2, 3
+zip: extension present, unzip present, 7-Zip not available
+Checking platform settings: OK
+Checking git settings: OK git version 2.53.0
+Checking http connectivity to packagist: OK
+Checking https connectivity to packagist: OK
+Checking github.com rate limit: OK
+Checking disk free space: OK
+```
+
+この結果に `FAIL` がある場合は、`composer` がうまく設定されていないということになります。その場合は、次のコマンドを実行します。
+
+```bash
+composer self-update --update-keys
+```
+
+途中で入力を求められるので、次の URL を開いてキーをコピーして入力します。
+
+- <https://composer.github.io/pubkeys.html>
+
+もしくは次の URL にあるキーをダウンロードして入力します。
+
+- Dev / Snapshot Public Key: <https://composer.github.io/snapshots.pub>
+- Tags Public Key: <https://composer.github.io/releases.pub>
+
+```bash
+curl -s -L -O https://composer.github.io/snapshots.pub
+curl -s -L -O https://composer.github.io/releases.pub
+cat snapshots.pub releases.pub > composer_keys.txt
+cat composer_keys.txt | script -q -c "composer self-update --update-keys" /dev/null
+```
+
+コマンド実行後、再度 `composer diagnose` を実行して `FAIL` が消えたことを確認します。
+
+## 7. 詳細ガイド
 
 環境のカスタマイズ、より詳細なデバッグ方法、その他の技術的な詳細については、以下のドキュメントを参照してください。
 
