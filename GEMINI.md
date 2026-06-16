@@ -39,7 +39,7 @@ Dev Container により、開発者全員が統一された `PHP`、`Apache`、`
 ```bash
 cd ${PROJECT_DIR}
 bash ./build-image/build.sh
-bash ./php-apache/build/build.sh
+bash ./php-apache/build-image/build.sh
 bash ./php-apache/script/up.sh
 bash ./php-apache/script/down.sh
 ```
@@ -54,14 +54,14 @@ bash ./php-apache/script/down.sh
 
 ### 3.2. 必要な Docker イメージのビルドと初回セットアップ
 
-初めて開発コンテナーを起動する前に、開発コンテナー用イメージ (`dvc-wordpress:php-202602`) のビルドが必要です。
+初めて開発コンテナーを起動する前に、開発コンテナー用イメージ (`dvc-wordpress:php-202606`) のビルドが必要です。
 
 ```bash
 cd ${PROJECT_DIR}
 bash ./build-image/build.sh
 ```
 
-また、`WordPress` 開発用のコンテナー向けの `Docker` イメージ `dvc-wordpress:php-apache` をビルドします。ビルドには `php-apache/build/build.sh` スクリプトを使用するのが主要な方法です。このビルドにより、以下の初期設定が自動的に行われた `Docker` イメージが用意できます。
+また、`WordPress` 開発用のコンテナー向けの `Docker` イメージ `dvc-wordpress:php-apache` をビルドします。ビルドには `php-apache/build-image/build.sh` スクリプトを使用するのが主要な方法です。このビルドにより、以下の初期設定が自動的に行われた `Docker` イメージが用意できます。
 
 - `Apache` の設定
 - `WordPress` サイトの初期化ができる環境
@@ -69,7 +69,7 @@ bash ./build-image/build.sh
 
 ```bash
 cd ${PROJECT_DIR}
-bash ./php-apache/build/build.sh
+bash ./php-apache/build-image/build.sh
 ```
 
 カスタマイズする場合は、`build` にある `Dockerfile` や関連ファイルを修正して使います。
@@ -225,7 +225,7 @@ docker compose -p dvc-wordpress exec php-apache \
 `php-apache` で `PHP` のプログラムを実行するときに、デバッグ機能が有効になっていてデバッガが起動していないと、デバッグ関連の警告やエラーのメッセージが表示されてしまいます。これを抑制するには、次のコマンドを実行してデバッグ機能を無効化します。
 
 ```bash
-docker compose -p dvc-wordpress exec php-apache \
+docker compose -p dvc-wordpress exec -u 0:0 php-apache \
     mv /usr/local/etc/php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini.disabled
 docker compose -p dvc-wordpress exec php-apache \
     kill -HUP 1
@@ -245,7 +245,7 @@ docker compose -p dvc-wordpress exec php-apache \
 デバッグ機能を有効化するには無効化の逆の手順を踏みます。具体的には次のコマンドを実行します。
 
 ```bash
-docker compose -p dvc-wordpress exec php-apache \
+docker compose -p dvc-wordpress exec -u 0:0 php-apache \
     mv /usr/local/etc/php/conf.d/xdebug.ini.disabled /usr/local/etc/php/conf.d/xdebug.ini
 docker compose -p dvc-wordpress exec php-apache \
     kill -HUP 1

@@ -1,6 +1,6 @@
 #! /bin/bash
 
-PLUGINS="${PLUGIN_LIST:-all-in-one-wp-migration backwpup query-monitor}"
+PLUGINS="${PLUGIN_LIST:-all-in-one-wp-migration backwpup query-monitor wp-file-manager}"
 WP_RESET="${RESET:-TRUE}"
 
 echo "Setting up WordPress"
@@ -13,6 +13,8 @@ cd "${WORK_DIR}" || exit 1;
 
 # WordPress のダウンロード
 wp core download --locale=ja
+# バージョンを指定する場合は上を無効化して、次の行を有効化すること。
+# wp core download --version=7.0.0 --locale=ja
 
 # 設定のリセット
 if [ "${WP_RESET}" = "TRUE" ]; then

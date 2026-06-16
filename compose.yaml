@@ -2,8 +2,8 @@ name: dvc-wordpress
 services:
   # 開発コンテナー
   dvc-wordpress:
-    image: dvc-wordpress:php-202602
-    # image: hiro345g/dvc:php-202602
+    # base image: hiro345g/dvc:202606
+    image: dvc-wordpress:php-202606
     container_name: dvc-wordpress
     hostname: dvc-wordpress
     init: true
@@ -52,7 +52,7 @@ services:
       stream {
           server { listen 5080; proxy_pass php-apache-adminer:8080; }
           server { listen 8080; proxy_pass php-apache:80; }
-          server { listen 13306; proxy_pass php-apache-mysql:3306; }          
+          server { listen 13306; proxy_pass php-apache-mysql:3306; }
       }' > /tmp/nginx_stream.conf && nginx -c /tmp/nginx_stream.conf -g 'daemon off;'"
     depends_on:
       php-apache-adminer:
@@ -71,6 +71,10 @@ services:
         target: /home/node/workspace
     networks:
       dvc-net:
+    # 必要がある場合に有効化
+    # extra_hosts:
+    #  # aliases は Docker 内部の DNS に登録されてしまうので使えない。
+    #  - "dev.internal:127.0.0.1"
     ports:
       - ${PHP_IP_PORT:-127.0.0.1:8080}:80
       - ${PHP_BUILT_IN_IP_PORT:-127.0.0.1:10080}:10080
@@ -78,6 +82,8 @@ services:
   php-apache-mysql:
     networks:
       dvc-net:
+        aliases:
+          - db
     ports:
       - ${MYSQL_IP_PORT:-127.0.0.1:13306}:3306
 
@@ -86,6 +92,39 @@ services:
       dvc-net:
     ports:
       - ${ADMINER_IP_PORT:-127.0.0.1:5080}:8080
+
+  php-apache-nginx-proxy:
+    image: nginx:alpine
+    container_name: php-apache-nginx-proxy
+    # network_mode: service:php-apache を使うと `hostname:` は指定できない。
+    network_mode: service:php-apache
+    command: >
+      sh -c "printf 'events { worker_connections 1024; }
+      stream {
+          server { listen 25; proxy_pass mailpit:1025; }
+      }' > /tmp/nginx_stream.conf && nginx -c /tmp/nginx_stream.conf -g 'daemon off;'"
+    depends_on:
+      mailpit:
+        condition: service_started
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit
+    hostname: dev.internal
+    ports:
+      # Mailpit Web UI
+      - "127.0.0.1:8025:8025"
+      # Mailpit SMTP
+      - "127.0.0.1:1025:1025"
+    networks:
+      dvc-net:
+    # 送信用メールサーバの設定は php-apache の `php.ini` にある次の指定で有効化されている
+    #
+    # ```ini
+    # [mail function]
+    # SMTP = localhost
+    # smtp_port = 25
+    # ```
 
 volumes:
   node-local-share-mise:

@@ -57,6 +57,8 @@ RewriteRule ^app001/ - [L]
 | `static/`    | HTML, CSS などの静的ファイルを格納するディレクトリ                         |
 | `info.php`   | PHP の環境情報を表示                                                       |
 
+＊ `resources/dev/mail.php` はメール機能の動作確認用のプログラムで、`php` コマンドで実行することを想定したものなのでパスはない。
+
 ## dvc-wordpress での利用方法
 
 `dvc-wordpress` 環境で `app001` を動作させるための手順は次のとおりです。
@@ -180,6 +182,14 @@ $ PASSWORD=pass002
 $ docker compose -p dvc-wordpress exec php-apache \
     htpasswd -b /home/node/workspace/php/.htpasswd ${USER_NAME} ${PASSWORD}
 Updating password for user user001
+```
+
+## sendmail によるメール機能の動作確認
+
+`mail()` 関数を使った `sendmail` コマンドによるメール機能が提供されているサーバの場合、この `mail.php` で動作確認ができます。ファイル内の送信先、送信元のメールアドレスを適切なものに変更してから次のように実行します。
+
+```bash
+php -f resources/dev/mail.php
 ```
 
 ## セキュリティ上の注意事項

@@ -2,11 +2,11 @@
 
 # set -x
 
-# 8.2.30 は `composer diagnose` で `Checking pubkeys:` が FAIL になるので対応
+# 8.3.31 は `composer diagnose` で `Checking pubkeys:` が FAIL になるので対応
 /bin/bash -c '\
     eval "$(~/.local/bin/mise activate bash)"; \
     curl -sS https://getcomposer.org/installer | php -- \
-    --install-dir=/home/node/.local/share/mise/installs/php/8.2.30/bin \
+    --install-dir=/home/node/.local/share/mise/installs/php/8.3.31/bin \
     --filename=composer; \
 '
 
@@ -19,5 +19,5 @@
 # cat snapshots.pub releases.pub > composer_keys.txt
 # eval "$(~/.local/bin/mise activate bash)"
 # cat composer_keys.txt \
-#     | script -q -c "/home/node/.local/share/mise/installs/php/8.2.30/bin/composer self-update --update-keys" /dev/null
+#     | script -q -c "/home/node/.local/share/mise/installs/php/8.3.31/bin/composer self-update --update-keys" /dev/null
 # rm snapshots.pub releases.pub composer_keys.txt;

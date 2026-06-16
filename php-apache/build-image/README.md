@@ -8,11 +8,11 @@
 
 `php-apache` 環境は、ここで定義された `Dockerfile` を基に構築されたカスタムイメージ (`dvc-wordpress:php-apache`) 上で動作します。このイメージには、`Apache`、`PHP`、および `WordPress` の実行に必要な拡張機能や設定がすべて含まれています。
 
-プロジェクトのセットアップ時や `Dev Container` から `php-apache` 環境を初期化する際に、プロジェクトルート (`${PROJECT_DIR}`) で `bash ./php-apache/build/build.sh` を実行すると、このフォルダ内の設定を使用してイメージがビルドされます。
+プロジェクトのセットアップ時や `Dev Container` から `php-apache` 環境を初期化する際に、プロジェクトルート (`${PROJECT_DIR}`) で `bash ./php-apache/build-image/build.sh` を実行すると、このフォルダ内の設定を使用してイメージがビルドされます。
 
 ```bash
 cd ${PROJECT_DIR}
-bash ./php-apache/build/build.sh
+bash ./php-apache/build-image/build.sh
 ```
 
 ## ファイル構成

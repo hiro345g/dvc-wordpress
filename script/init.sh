@@ -2,11 +2,11 @@
 SCRIPT_DIR=$(dirname "$0")
 BASE_DIR=$(cd "${SCRIPT_DIR}/.." || exit 1;pwd)
 
-# 開発コンテナー用イメージ `dvc-wordpress:php-202602` のビルド
+# 開発コンテナー用イメージ `dvc-wordpress:php-202606` のビルド
 bash "${BASE_DIR}/build-image/build.sh"
 
 # WordPress 用イメージ `dvc-wordpress:php-apache` のビルド
-bash "${BASE_DIR}/php-apache/build/build.sh"
+bash "${BASE_DIR}/php-apache/build-image/build.sh"
 
 # ビルドが成功したら、使用する Docker オブジェクトの初期化
 # Docker オブジェクトがすでにある場合は初期化処理は自動スキップ

@@ -25,5 +25,5 @@ else
 fi
 
 echo "---- Commands to remove Docker images ----"
-echo "docker image rm dvc-wordpress:php-202602"
+echo "docker image rm dvc-wordpress:php-202606"
 echo "docker image rm dvc-wordpress:php-apache"
