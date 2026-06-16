@@ -44,14 +44,12 @@ docker compose -p dvc-wordpress exec php-apache /usr/local/bin/php -f /home/node
 
 ### dev.internal（mailpit:1025）の利用
 
-php.ini の設定変更
+php.ini の設定変更（`SMTP = dev.internal` は `SMTP = mailpit` でも良い）
 
 ```bash
 docker compose -p dvc-wordpress exec -u 0:0 php-apache sed -i 's/SMTP = localhost/SMTP = dev.internal/' /usr/local/etc/php/php.ini
 docker compose -p dvc-wordpress exec -u 0:0 php-apache sed -i 's/smtp_port = 25/smtp_port = 1025/' /usr/local/etc/php/php.ini
 ```
-
-docker compose -p dvc-wordpress exec -u 0:0 php-apache sed -i 's/SMTP = dev.internal/SMTP = mailpit/' /usr/local/etc/php/php.ini
 
 設定変更の確認
 
