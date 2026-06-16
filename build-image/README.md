@@ -12,7 +12,7 @@
 
 `mise` を使用して `PHP` 環境をセットアップします。`build.sh` スクリプトは、コンテナー内で自動的に `mise` を初期化し、指定された `PHP` バージョンをインストールします。
 
-ベースイメージに devcontainers の features にある php を使っている `hiro345g/dvc:php-202602` を採用していない理由は、`PHP` のビルドオプションの指定が設定できずに固定となるからです。そのため、使いたい `PHP` の拡張機能があったときに、対応しやすい `mise` を採用することにしました。
+ベースイメージに devcontainers の features にある php を使っている `hiro345g/dvc:php-202606` を採用していない理由は、`PHP` のビルドオプションの指定が設定できずに固定となるからです。そのため、使いたい `PHP` の拡張機能があったときに、対応しやすい `mise` を採用することにしました。
 
 ### 2. イメージのビルドスクリプトの実行
 
@@ -23,4 +23,4 @@ cd ${PROJECT_DIR}
 bash ./build-image/build.sh
 ```
 
-このスクリプトは、`build-image/Dockerfile` に基づいてイメージをビルドし、`dvc-wordpress:php-202602` というタグを付けます。
+このスクリプトは、`build-image/Dockerfile` に基づいてイメージをビルドし、`dvc-wordpress:php-202606` というタグを付けます。

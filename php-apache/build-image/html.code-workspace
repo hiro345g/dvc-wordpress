@@ -10,13 +10,14 @@
         }
     ],
     "settings": {
-        // "php.executables": "/usr/local/php/current/bin/php",
-        // "php.executablePath": "/usr/local/php/current/bin/php",
+        // dvc-wordpress では、`/usr/local/php/current` を `/home/node/.local/share/mise/installs/php/latest` などへ置換して使用
+        // "php.executables": "/usr/local/php/bin/php",
+        // "php.executablePath": "/usr/local/php/bin/php",
         "php.validate.run": "onType",
-        "php.validate.executablePath": "/usr/local/php/current/bin/php",
+        "php.validate.executablePath": "/usr/local/bin/php",
         "php.validate.enable": false,
         "php.suggest.basic": false,
-        "php.debug.executablePath": "/usr/local/php/current/bin/php",
+        "php.debug.executablePath": "/usr/local/bin/php",
         "[php]": {
             "editor.formatOnSave": true,
             "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"

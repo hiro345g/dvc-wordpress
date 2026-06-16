@@ -20,7 +20,12 @@ services:
       # dvc-wordpress:php-apache イメージで使う PHP や Apache2 の設定を変更したい場合は、必要なファイルを用意してから上記のバインドマウントを有効化
 
   php-apache-mysql:
-    image: mysql:8.0.42-bookworm
+    # MariaDB 10.6以上に対応
+    image: mariadb:12.3.2-noble
+    # MySQL 8.4 系を使う場合は下記, oraclelinux 系のみ
+    # image: mysql:8.4.9-oraclelinux9
+    # MySQL 8.0 系を使う場合は下記, trixie はない
+    # image: mysql:8.0.46-bookworm
     container_name: php-apache-mysql
     hostname: php-apache-mysql
     volumes:
@@ -28,12 +33,20 @@ services:
     ports:
       - ${MYSQL_IP_PORT:-127.0.0.1:13306}:3306
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-php-apachepass001}
-      - MYSQL_DATABASE=${MYSQL_DATABASE:-wordpress}
-      - MYSQL_USER=${MYSQL_USER:-dbuser001}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-dbpass001}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-php-apachepass001}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-wordpress}
+      MYSQL_USER: ${MYSQL_USER:-dbuser001}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-dbpass001}
+      # MariaDB は MySQL のものがそのまま使える。下記に置き換えても良い。
+      # MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-php-apachepass001}
+      # MARIADB_DATABASE: ${MARIADB_DATABASE:-wordpress}
+      # MARIADB_USER: ${MARIADB_USER:-dbuser001}
+      # MARIADB_PASSWORD: ${MARIADB_PASSWORD:-dbpass001}
     healthcheck:
-      test: "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD"
+      # MariaDB 用
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      # MySQL 用
+      # test: "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD"
       start_interval: 1s
       start_period: 10s
       timeout: 1s
@@ -41,7 +54,7 @@ services:
       retries: 10
 
   php-apache-adminer:
-    image: adminer:5.3.0-standalone
+    image: adminer:5.4.2-standalone
     container_name: php-apache-adminer
     hostname: php-apache-adminer
     ports:

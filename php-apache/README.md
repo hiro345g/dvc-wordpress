@@ -17,7 +17,7 @@
 
 ### 2.1. Docker イメージのビルド
 
-`php-apache` 環境の `Docker` イメージは、`build/build.sh` スクリプトを実行することでビルドされます。これにより `dvc-wordpress:php-apache` というタグが付けられたイメージが作成されます。
+`php-apache` 環境の `Docker` イメージは、`build-image/build.sh` スクリプトを実行することでビルドされます。これにより `dvc-wordpress:php-apache` というタグが付けられたイメージが作成されます。
 
 ### 2.2. 環境の起動と停止
 

@@ -47,6 +47,11 @@ sudo apt-get install -y --no-install-recommends \
     libmagickwand-dev
 
 # ビルドオプションを指定してインストール
+# アップデート可能なバージョンの確認方法
+# ```
+# docker container run --rm -it -u 1000:1000 dvc-wordpress:php-202602 \
+#     /home/node/.local/bin/mise ls-remote php | grep 8.3
+# ```
 /bin/bash -c '\
     export PHP_CONFIGURE_OPTIONS="\
         --enable-gd \
@@ -57,7 +62,7 @@ sudo apt-get install -y --no-install-recommends \
         --with-zlib --disable-phpdbg --disable-cgi"; \
     cd ~; \
     eval "$(~/.local/bin/mise activate bash)"; \
-    ~/.local/bin/mise install -y -v php@8.2.30; \
+    ~/.local/bin/mise install -y -v php@8.3.31; \
 '
 
 # mise のグローバル設定ファイルの追加
@@ -66,7 +71,7 @@ if [ ! -e /home/node/.config/mise/ ]; then
 fi
 cat << EOS > /home/node/.config/mise/config.toml 
 [tools]
-php = "8.2.30"
+php = "8.3.31"
 
 [settings]
 # mise の php を使わない場合
@@ -74,19 +79,24 @@ php = "8.2.30"
 EOS
 
 # xdebug, imagick インストール
+# アップグレード可能なバージョンがあるか確認する方法
+# ```
+# docker container run --rm -it -u 1000:1000 dvc-wordpress:php-202602 \
+#     /home/node/.local/share/mise/installs/php/latest/bin/pecl list-upgrades
+# ```
 if [ -e /tmp/pear ]; then sudo chown -R node /tmp/pear; else mkdir /tmp/pear; fi
 /bin/bash -c '\
     cd ~; \
     eval "$(~/.local/bin/mise activate bash)"; \
     pecl channel-update pecl.php.net; \
-    pecl install xdebug-3.3.2; \
-    yes "" | pecl install imagick-3.8.0; \
+    pecl install xdebug-3.5.3; \
+    yes "" | pecl install imagick-3.8.1; \
 '
 
 # Enable PHP extensions（`php -m` で表示されない組み込まれていないものを追加指定）
 /bin/bash -c '\
     eval "$(~/.local/bin/mise activate bash)"; \
-    PHP_INI_DIR="/home/node/.local/share/mise/installs/php/8.2.30/conf.d"; \
+    PHP_INI_DIR="/home/node/.local/share/mise/installs/php/8.3.31/conf.d"; \
     if [ ! -d "$PHP_INI_DIR" ]; then mkdir -p "$PHP_INI_DIR"; fi; \
     echo "zend_extension=opcache.so" | tee "$PHP_INI_DIR/opcache.ini"; \
     echo "zend_extension=xdebug.so" | tee "$PHP_INI_DIR/xdebug.ini"; \
