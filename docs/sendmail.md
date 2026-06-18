@@ -1,6 +1,8 @@
 # メール送信
 
-ログを確認するのにデバッグ情報があると見にくくなるので無効化
+ここでは、メール送信機能がうまく動作しないときのための確認方法を説明する。
+
+まず、ログを確認するのにデバッグ情報があると見にくくなるので無効化しておく。
 
 ```bash
 docker compose -p dvc-wordpress exec -u 0:0 php-apache \
@@ -9,15 +11,11 @@ docker compose -p dvc-wordpress exec php-apache \
     kill -HUP 1
 ```
 
-## sendmail の利用
+## msmtp の利用
 
-`sendmail` コマンドを使っているシステムを利用している場合は、sendmail パッケージをインストールして、`sendmail` コマンドを使うと良い。
+`php-apache` コンテナのメール送信については、`sendmail` の代わりに `msmtp` を使用している。
 
-```bash
-docker compose -p dvc-wordpress exec -u 0:0 php-apache bash -c 'apt-get update && apt-get install -y sendmail'
-```
-
-`mail.php` の作成。
+`${REPO_DIR}/app001/resources/dev/mail.php` にメール送信の動作確認用 PHP プログラムがある。
 
 ```php
 <?php
@@ -36,15 +34,17 @@ docker compose -p dvc-wordpress \
   cp app001/resources/dev/mail.php php-apache:/home/node/workspace/php/mail.php
 ```
 
-送信テスト。
+送信テスト。`-u www-data` がうまく動作しない場合は `-u 1000` を指定すること。
 
 ```bash
-docker compose -p dvc-wordpress exec php-apache /usr/local/bin/php -f /home/node/workspace/php/mail.php
+docker compose -p dvc-wordpress exec -u www-data php-apache /usr/local/bin/php -f /home/node/workspace/php/mail.php
 ```
+
+これで `mailpit` サービスのコンテナにメールが届いたらメール送信機能が正しく動作している。
 
 ### dev.internal（mailpit:1025）の利用
 
-php.ini の設定変更（`SMTP = dev.internal` は `SMTP = mailpit` でも良い）
+`php.ini` の設定変更（`SMTP = dev.internal` は `SMTP = mailpit` でも良い）
 
 ```bash
 docker compose -p dvc-wordpress exec -u 0:0 php-apache sed -i 's/SMTP = localhost/SMTP = dev.internal/' /usr/local/etc/php/php.ini
@@ -62,10 +62,10 @@ mail.add_x_header = Off
 mail.mixed_lf_and_crlf = Off
 ```
 
-送信テスト。（送信できたが、速度は変わらなかった）
+送信テスト
 
 ```bash
-docker compose -p dvc-wordpress exec php-apache /usr/local/bin/php -f /home/node/workspace/php/mail.php
+docker compose -p dvc-wordpress exec -u www-data php-apache /usr/local/bin/php -f /home/node/workspace/php/mail.php
 ```
 
 ## telnet での確認

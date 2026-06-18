@@ -1,4 +1,4 @@
-FROM php:8.3-apache
+FROM php:8.3-apache-trixie
 
 ARG USER_NAME=www-data
 ARG USER_UID=1000
@@ -16,7 +16,9 @@ RUN apt-get update \
         libonig-dev \
         git \
         bash-completion \
-        sudo
+        sudo \
+        msmtp \
+        ca-certificates
 
 # LAMP アプリでよく使うパッケージのインストール
 RUN apt-get install -y --no-install-recommends \
@@ -76,8 +78,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs
 
 # カスタマイズ用ファイルのコピー
-COPY etc_apache2/conf-available/docker-php.conf /etc/apache2/conf-available/docker-php.conf
-COPY etc_apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY etc/apache2/conf-available/docker-php.conf /etc/apache2/conf-available/docker-php.conf
+COPY etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY etc/msmtprc /etc/msmtprc
 COPY usr_local_etc_php/php.ini /usr/local/etc/php/php.ini
 COPY usr_local_etc_php/conf.d/opcache-recommended.ini /usr/local/etc/php/conf.d/opcache-recommended.ini
 COPY usr_local_etc_php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
@@ -91,3 +94,8 @@ RUN usermod -u ${USER_UID} ${USER_NAME} \
     && chmod 440 /etc/sudoers.d/${USER_NAME} \ 
     && chown -R ${USER_NAME}:${USER_NAME} /var/www \
     && chsh -s /bin/bash ${USER_NAME}
+
+# msmtprc のパーミッション設定 (usermod/groupmod の後で実行)
+# msmtp は設定ファイルのパーミッションに厳格なため、所有者を root にし、
+# www-data が所属するグループに読み取りを許可する (640)
+RUN chown root:${USER_NAME} /etc/msmtprc && chmod 640 /etc/msmtprc
