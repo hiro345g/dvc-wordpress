@@ -1,0 +1,34 @@
+name: dvc-wordpress-mkcert-util
+services:
+  dvc-wordpress-mkcert-util:
+    image: dvc-wordpress:mkcert
+    #image: bitnami/git:2.37.0
+    container_name: dvc-wordpress-mkcert-util
+    hostname: dvc-wordpress-mkcert-util
+    tty: true
+    command: sleep infinity
+    working_dir: /workspace
+    volumes:
+      - dvc-wordpress-mkcert-util-data:/workspace
+      - dvc-wordpress-mkcert-root:/dvc-wordpress-mkcert-root
+      - dvc-wordpress-mkcert-data:/dvc-wordpress-mkcert-data
+      - type: bind
+        source: ${LOCAL_WORKSPACE_FOLDER:-../..}/mkcert/util/script
+        target: /script
+      - type: bind
+        source: ${LOCAL_WORKSPACE_FOLDER:-../..}/mkcert/build-image
+        target: /build-image
+      - type: bind
+        source: ${LOCAL_WORKSPACE_FOLDER:-../..}/mkcert/script
+        target: /docker/script
+        read_only: true
+
+volumes:
+  dvc-wordpress-mkcert-util-data:
+    name: dvc-wordpress-mkcert-util-data
+  dvc-wordpress-mkcert-root:
+    name: dvc-wordpress-mkcert-root
+    external: true
+  dvc-wordpress-mkcert-data:
+    name: dvc-wordpress-mkcert-data
+    external: true

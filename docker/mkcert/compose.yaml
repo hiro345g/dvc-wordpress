@@ -1,0 +1,20 @@
+name: dvc-wordpress-mkcert
+services: 
+  mkcert:
+    image: dvc-wordpress:mkcert-202607
+    container_name: dvc-wordpress-mkcert
+    hostname: dvc-wordpress-mkcert
+    tty: true
+    working_dir: /root
+    volumes:
+      - dvc-wordpress-mkcert-root:/root
+      - dvc-wordpress-mkcert-data:/mkcert-keys
+      - type: bind
+        source: ${LOCAL_WORKSPACE_FOLDER:-..}/mkcert/script
+        target: /script
+
+volumes:
+  dvc-wordpress-mkcert-root:
+    name: dvc-wordpress-mkcert-root
+  dvc-wordpress-mkcert-data:
+    name: dvc-wordpress-mkcert-data

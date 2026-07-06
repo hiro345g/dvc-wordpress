@@ -5,13 +5,9 @@ dvc-wordpress プロジェクトは、使いやすい開発コンテナー dvc-w
 
 開発者全員が `PHP`、`Apache`、`Xdebug` などを含む統一された実行環境を簡単に利用できるため、環境差異による問題を解消し、開発に集中できます。
 
-これを使った WordPress の開発についての解説記事を次の URL で公開しています。
-
-- [PHP 開発環境と実行環境を統合して WordPress 開発を効率化](https://zenn.dev/hiro345/articles/20250719_dvc_wordpress)
-
 ## 1. 主な特徴
 
-dvc-worpdress は、`Docker` と `Dev Container` により、OS に依存しない一貫した開発環境を提供します（統一された開発環境）。
+dvc-worpdress は、`Docker` と `Dev Container` により、OS に依存しない一貫した開発環境を提供します。
 
 また、`dvc-wordpress` 開発コンテナーを起動すると、WordPress が実行可能な Apache の Web サービスである `php-apache` と、関連するデータベースサービス（MySQL）が自動的に起動します。手動での `php-apache` サービスの起動が不要になり、統合されたワークフローで開発体験が向上します（WordPress 実行環境の自動連携）。
 
@@ -31,7 +27,7 @@ dvc-worpdress は、`Docker` と `Dev Container` により、OS に依存しな�
 4. 簡単なセットアップ
 5. 柔軟に利用可能なコンテナーの提供
 6. メール送信機能の動作確認がしやすい環境
-7. カスタマイズ可能
+7. 柔軟なカスタマイズが可能
 
 ## 2. 始め方
 
@@ -58,7 +54,7 @@ dvc-worpdress は、`Docker` と `Dev Container` により、OS に依存しな�
 以下の手順で開発コンテナーの実行環境を構築します。
 
 1. リポジトリをクローン
-2. 開発コンテナー用イメージ `dvc-wordpress:php-202606` のビルド
+2. 開発コンテナー用イメージ `dvc-wordpress:202607` のビルド
 3. WordPress 用イメージ `dvc-wordpress:php-apache` のビルド
 4. 使用する Docker オブジェクトの初期化
 
@@ -71,7 +67,7 @@ cd dvc-wordpress
 
 ここでの作業は `dvc-wordpress` フォルダをカレントとしてコマンドを実行します。なお、これ以降、`dvc-wordperss` を `${PROJECT_DIR}` と表記します。
 
-開発コンテナー用イメージ `dvc-wordpress:php-202606` のビルドをするには、`build-image/build.sh` を実行します。
+開発コンテナー用イメージ `dvc-wordpress:202607` のビルドをするには、`build-image/build.sh` を実行します。
 
 ```bash
 bash ./build-image/build.sh
@@ -80,7 +76,7 @@ bash ./build-image/build.sh
 WordPress 用イメージ `dvc-wordpress:php-apache` のビルドをするには、`php-apache/build-image/build.sh` を実行します。
 
 ```bash
-bash ./php-apache/build-image/build.sh
+bash ./docker/php-apache/build-image/build.sh
 ```
 
 ビルドが成功したら、使用する Docker オブジェクトの初期化をします。
@@ -88,7 +84,7 @@ bash ./php-apache/build-image/build.sh
 `php-apache/script/up.sh` を実行すると、自動で使用する Docker オブジェクトの初期化処理がされます。Docker オブジェクトがすでにある場合は初期化処理は無視されます。
 
 ```bash
-bash ./php-apache/script/up.sh
+bash ./docker/php-apache/script/up.sh
 ```
 
 これで `php-apache` 向けサービスが起動したら、使用する Docker オブジェクトの初期化は成功しています。
@@ -109,7 +105,7 @@ php-apache          running(3)   （略）
 確認ができたら、`php-apache/script/down.sh` を実行して php-apache プロジェクトで起動したコンテナーを破棄します。
 
 ```bash
-bash ./php-apache/script/down.sh
+bash ./docker/php-apache/script/down.sh
 ```
 
 ### 2.3 開発コンテナーで WordPress を用意
@@ -139,29 +135,21 @@ VS Code でこのプロジェクトフォルダを開くと、通知が表示さ
 $ docker container ls --format "{{.Names}}" | grep php-apache
 php-apache-adminer
 php-apache
-php-apache-mysql
+php-apache-db
 ```
 
-この時点では、WordPress 用のファイルを配置する開発用のフォルダが作成されていません。これを用意します。
-
-```bash
-docker compose -p dvc-wordpress exec php-apache bash -c "
-if [ ! -e /home/node/workspace/php/html/ ]; then \
-  mkdir -p /home/node/workspace/php/html/; \
-fi \
-"
-```
+この時点で、WordPress 用のファイルを配置する開発用のフォルダが `dvc-wordpress:/home/node/workspace/php/html` に作成されています。
 
 次に `WordPress` サイトの初期化設定をします。
 
 起動した `php-apache` コンテナーへ必要なファイルをコピーします。
 
 ```bash
-docker compose -p dvc-wordpress exec php-apache bash -c "
-  cp /var/www/html/init-wp.sh /home/node/workspace/php/html/ 
+docker compose -p dvc-wordpress exec php-apache bash -c "\
+  cp /var/www/html/init-wp.sh /home/node/workspace/php/html/ \
 "
-docker compose -p dvc-wordpress exec php-apache bash -c "
-  cp /var/www/html/html.code-workspace /home/node/workspace/php/html/
+docker compose -p dvc-wordpress exec php-apache bash -c "\
+  cp /var/www/html/html.code-workspace /home/node/workspace/php/ \
 "
 ```
 
@@ -335,7 +323,23 @@ cat composer_keys.txt | script -q -c "composer self-update --update-keys" /dev/n
 - `.devcontainer/README.md`: 開発コンテナー `dvc-wordpress` の設定に関する詳細な説明です。
 - `php-apache/README.md`: WordPress コンテナー `php-apache` に関する技術的な詳細説明です。
 
-## 8. バージョン
+## 8. HTTPS 対応
+
+HTTPS 対応の開発環境を用意するには次のフォルダを使います。
+
+| フォルダ           | 説明                             |
+| ------------------ | -------------------------------- |
+| `mkcert`           | 証明書作成用                     |
+| `nginx`            | HTTPS 対応のリバースプロキシー用 |
+| `php-apache-https` | HTTPS 対応 Apache 用             |
+
+基本は `mkcert` で必要な証明書ファイルを作成します。ここで作成した証明書ファイルを使って、`compose-nginx-https.yaml` に含まれる HTTPS 対応のリバースプロキシー用の `nginx-proxy-https` コンテナを起動するか、`compose-https.yaml` に含まれる HTTPS 対応の Web サーバーを `php-apache-https` コンテナで起動するか、どちらかにします。`compose.yaml` で、それぞれの `yaml` ファイルのインクルードをコメントにしてあるので、使う方を有効化するようにしましょう。
+
+`php-apache-https` コンテナを使った方が Web サーバが apache2 だけで完結するのでシステム構成は単純なものになります。`nginx-proxy-https` コンテナを使う場合は、Web サーバは nginx + apache2 の構成になるので、少し複雑になります。
+
+両方の環境を用意してあるのは、実際に使っている運用環境に近い方がローカルでの再現がしやすくなるからです。環境の違いによって再現性に差が出ることがあるので、できるだけ実際に使っている運用環境に近い構成で動かすように心がけましょう。
+
+## 9. バージョン
 
 WordPress のシステム要件は次の URL で確認ができます。
 
@@ -355,8 +359,8 @@ WordPress 7.0 の場合は次のようになります。
   - php:8.3.31
   - mariadb:12.3.2-noble
   - adminer:5.4.2-standalone
+  - dvc-wordpress:202607
   - hiro345g/dvc:202606
-  - hiro345g/dvc-wordpress:php-202606
 - mise: php@8.3.31
 - xdebug-3.5.3
 - imagick-3.8.1

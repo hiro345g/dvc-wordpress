@@ -38,10 +38,10 @@ Dev Container により、開発者全員が統一された `PHP`、`Apache`、`
 
 ```bash
 cd ${PROJECT_DIR}
-bash ./build-image/build.sh
-bash ./php-apache/build-image/build.sh
-bash ./php-apache/script/up.sh
-bash ./php-apache/script/down.sh
+bash ./docker/dvc/build-image/build.sh
+bash ./docker/php-apache/build-image/build.sh
+bash ./docker/php-apache/script/up.sh
+bash ./docker/php-apache/script/down.sh
 ```
 
 このコマンドブロックには、`php-apache`が単体で動作するかを確認するテストが含まれています。必須ではありませんが、事前に行うと問題の切り分けに役立ちます。
@@ -54,14 +54,14 @@ bash ./php-apache/script/down.sh
 
 ### 3.2. 必要な Docker イメージのビルドと初回セットアップ
 
-初めて開発コンテナーを起動する前に、開発コンテナー用イメージ (`dvc-wordpress:php-202606`) のビルドが必要です。
+初めて開発コンテナーを起動する前に、開発コンテナー用イメージ (`dvc-wordpress:202607`) のビルドが必要です。
 
 ```bash
 cd ${PROJECT_DIR}
-bash ./build-image/build.sh
+bash ./docker/dvc/build-image/build.sh
 ```
 
-また、`WordPress` 開発用のコンテナー向けの `Docker` イメージ `dvc-wordpress:php-apache` をビルドします。ビルドには `php-apache/build-image/build.sh` スクリプトを使用するのが主要な方法です。このビルドにより、以下の初期設定が自動的に行われた `Docker` イメージが用意できます。
+また、`WordPress` 開発用のコンテナー向けの `Docker` イメージ `dvc-wordpress:php-apache` をビルドします。ビルドには `docker/php-apache/build-image/build.sh` スクリプトを使用するのが主要な方法です。このビルドにより、以下の初期設定が自動的に行われた `Docker` イメージが用意できます。
 
 - `Apache` の設定
 - `WordPress` サイトの初期化ができる環境
@@ -69,16 +69,16 @@ bash ./build-image/build.sh
 
 ```bash
 cd ${PROJECT_DIR}
-bash ./php-apache/build-image/build.sh
+bash ./docker/php-apache/build-image/build.sh
 ```
 
-カスタマイズする場合は、`build` にある `Dockerfile` や関連ファイルを修正して使います。
+カスタマイズする場合は、`docker/php-apache/build-image` や `docker/dvc/build-image` にある `Dockerfile` や関連ファイルを修正して使います。
 
 ビルドが成功したら、`Docker Compose` プロジェクトの `php-apache` 向けサービスを起動します。これで、このプロジェクトで使用する Docker オブジェクトの初期化がされます。
 
 ```bash
 cd ${PROJECT_DIR}
-bash ./php-apache/script/up.sh
+bash ./docker/php-apache/script/up.sh
 ```
 
 `docker compose ls` コマンドで、`php-apache` プロジェクトが `running` となっていることを確認します。`grep` コマンドが使えない環境の場合は、一覧表示される中から該当する行を探してください。
@@ -91,14 +91,14 @@ docker compose ls | grep php-apache
 
 ```bash
 $ docker compose ls | grep php-apache
-php-apache    running(3)    （略）/dvc-wordpress/php-apache/compose.yaml
+php-apache    running(3)    （略）/dvc-wordpress/docker/php-apache/compose.yaml
 ```
 
 起動が成功していたら、停止します。
 
 ```bash
 cd ${PROJECT_DIR}
-bash ./php-apache/script/down.sh
+bash ./docker/php-apache/script/down.sh
 ```
 
 ### 3.4. **`Dev Container` の起動**
@@ -119,7 +119,7 @@ bash ./php-apache/script/down.sh
 $ docker container ls --format "{{.Names}}" | grep php-apache
 php-apache-adminer
 php-apache
-php-apache-mysql
+php-apache-db
 ```
 
 開発用のフォルダを作成します。
@@ -176,7 +176,7 @@ $ docker compose -p dvc-wordpress exec dvc-wordpress curl -L -s http://localhost
 
 参考までに、`WordPerss` 用のデータは、次の `Docker` ボリュームに保存されています。
 
-- `dvc-wordpress-php-apache-mysql-data` ... DB のデータ
+- `dvc-wordpress-php-apache-db-data` ... DB のデータ
 - `dvc-wordpress-home-node-workspace-data` ... `php/html` フォルダに `WordPress` のファイル
 
 なお、`WordPress` を初期化したい場合は、`init-wp.sh` を再実行します。開発するプログラムによっては、完全な初期化をせずにしたい場合もあるでしょう。その場合は、`init-wp.sh` を修正して使うようにしてください。
@@ -332,25 +332,29 @@ dvc-wordpress/
 │       │       ├── index.html    # 静的ファイルのインデックスページ
 │       │       └── sample.html   # 静的ファイルのサンプルページ
 ├── compose.yaml                   # Dev Container を起動するための Docker Compose ファイル
-├── php-apache/                    # WordPress 実行環境 (Apache, PHP, MySQL) の設定
-│   ├── build/                    # php-apache コンテナーの Docker イメージをビルドするための設定
-│   │   ├── .dockerignore
-│   │   ├── Dockerfile           # Docker イメージの定義
-│   │   ├── build.sh             # ビルドスクリプト
-│   │   ├── compose.yaml         # ビルド時に使用する Docker Compose ファイル
-│   │   ├── init-wp.sh           # WordPress の初期セットアップスクリプト
-│   │   ├── etc_apache2/         # Apache の設定ファイル
-│   │   ├── html.code-workspace  # dvc-wordpress:/home/node/workspace/php/html/ に置いて使うワークスペースファイルの例
-│   │   ├── sample.env           # ビルド時の環境設定ファイルのサンプル
-│   │   └── usr_local_etc_php/   # PHP の設定ファイル
-│   ├── compose.yaml              # dvc-wordpress を使わないときに WordPress, DB 用サービスを利用するときに使用
-│   ├── php-apache-core/
-│   │    └── compose.yaml        # WordPress, DB 用サービスの定義
-│   └── script/                   # php-apache 環境の起動・停止スクリプト
-│       ├── down.sh
-│       ├── start.sh
-│       ├── stop.sh
-│       └── up.sh
+├── docker/                        # 各種コンテナの設定
+│   ├── dvc/                       # dvc-wordpress 用の設定
+│   │   └── build-image/           # 開発コンテナ用 Docker イメージをビルドするための設定
+│   │       ├── Dockerfile
+│   │       └── build.sh
+│   └── php-apache/                # WordPress 実行環境 (Apache, PHP, MySQL) の設定
+│       ├── build-image/           # php-apache コンテナーの Docker イメージをビルドするための設定
+│       │   ├── .dockerignore
+│       │   ├── Dockerfile         # Docker イメージの定義
+│       │   ├── build.sh           # ビルドスクリプト
+│       │   ├── compose.yaml       # ビルド時に使用する Docker Compose ファイル
+│       │   ├── init-wp.sh         # WordPress の初期セットアップスクリプト
+│       │   ├── html.code-workspace # dvc-wordpress:/home/node/workspace/php/html/ に置いて使うワークスペースファイルの例
+│       │   ├── sample.env         # ビルド時の環境設定ファイルのサンプル
+│       │   └── usr_local_etc_php/ # PHP の設定ファイル
+│       ├── compose.yaml            # dvc-wordpress を使わないときに WordPress, DB 用サービスを利用するときに使用
+│       ├── php-apache-core/
+│       │    └── compose.yaml      # WordPress, DB 用サービスの定義
+│       └── script/                 # php-apache 環境の起動・停止スクリプト
+│           ├── down.sh
+│           ├── start.sh
+│           ├── stop.sh
+│           └── up.sh
 └── workspace_share/               # 開発コンテナーとホストで共有するフォルダ
 ```
 

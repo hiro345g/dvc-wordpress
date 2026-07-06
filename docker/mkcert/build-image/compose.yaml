@@ -1,0 +1,9 @@
+name: dvc-wordpress-mkcert-build
+services: 
+  dvc-wordpress-mkcert-build:
+    build: .
+    image: dvc-wordpress:mkcert-202607
+    container_name: dvc-wordpress-mkcert-build
+    hostname: dvc-wordpress-mkcert-build
+    tty: true
+    working_dir: /root

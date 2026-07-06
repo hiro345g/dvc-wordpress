@@ -1,0 +1,9 @@
+name: php-apache-https-build
+services:
+  php-apache-https-build:
+    build:
+      context: .
+    image: dvc-wordpress:php-apache-https-202607
+    container_name: php-apache-https-build
+    hostname: php-apache-https-build
+    tty: true

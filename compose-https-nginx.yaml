@@ -1,0 +1,25 @@
+name: dvc-wordpress
+
+services:
+  nginx-proxy-https:
+    image: nginx:alpine
+    container_name: nginx-proxy-https
+    network_mode: service:dvc-wordpress
+    command: nginx -c /tmp/nginx-https.conf -g 'daemon off;'
+    volumes:
+      - type: bind
+        source: ./docker/nginx/nginx_reverse_proxy.conf
+        target: /tmp/nginx-https.conf
+      - type: bind
+        source: ${CERT_FILE:-./docker/mkcert/backup/mkcert-keys/certs/www.dev.internal.pem}
+        target: /tmp/cert.pem
+      - type: bind
+        source: ${KEY_FILE:-./docker/mkcert/backup/mkcert-keys/private/www.dev.internal.key}
+        target: /tmp/key.pem
+    depends_on:
+      php-apache-adminer:
+        condition: service_started
+      php-apache:
+        condition: service_healthy
+      php-apache-db:
+        condition: service_healthy

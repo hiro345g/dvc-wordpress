@@ -1,0 +1,16 @@
+name: dev-mariadb
+services:
+  db:
+    image: mariadb:12.3.2-noble
+    container_name: dev-mariadb
+    hostname: dev-mariadb
+    networks:
+      dvc-net:
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-php-apachepass001}
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-wordpress}
+      MARIADB_USER: ${MARIADB_USER:-dbuser001}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-dbpass001}
+
+include:
+  - ../dev-common/compose-net-external.yaml

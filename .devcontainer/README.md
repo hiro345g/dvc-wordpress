@@ -9,14 +9,16 @@ Dev Container に関係するファイルについて、説明します。
 ```text
 dvc-wordpress/
 ├── .devcontainer/
-│   ├── devcontainer.json        # Dev Container用設定ファイル
-│   ├── README.md                # このファイル
-│   ├── sample.env               # 環境変数設定ファイルのサンプル
+│   ├── devcontainer.json   # Dev Container用設定ファイル
+│   ├── README.md           # このファイル
+│   ├── sample.env          # 環境変数設定ファイルのサンプル
 │   └── script/
-│       ├── init.sh              # Dev Container 初期化スクリプト
-│       └── php-apache/          # Dev Container 利用時の php-apache 用スクリプト
-├── compose.yaml                  # Dev Container を起動するための Docker Compose ファイル
-└── workspace_share/              # 開発コンテナーとホストで共有するフォルダ
+│       ├── init.sh         # Dev Container 初期化スクリプト
+│       ├── db_dump.sh      # MariaDB のバックアップ取得用スクリプト
+│       ├── db_restore.sh   # MariaDB のバックアップをリストアするスクリプト
+│       └── php-apache/     # Dev Container 利用時の php-apache 用スクリプト
+├── compose.yaml             # Dev Container を起動するための Docker Compose ファイル
+└── workspace_share/         # 開発コンテナーとホストで共有するフォルダ
 ```
 
 これ以降、`dvc-wordpress` フォルダを `${PROJECT_DIR}` と表記します。

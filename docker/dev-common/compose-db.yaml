@@ -1,0 +1,21 @@
+services:
+  dev-adminer:
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    tmpfs:
+      - /var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_interval: 1s
+      start_period: 10s
+      timeout: 1s
+      interval: 30s
+      retries: 10
+
+include:
+  - ../dev-mariadb/compose.yaml
+  - ../dev-adminer/compose.yaml
+  - ./compose-net-external.yaml

@@ -1,0 +1,14 @@
+name: dev-php-fpm-wp-build
+
+services:
+  php:
+    build:
+      context: php
+      dockerfile: ./Dockerfile
+    image: dvc-wordpress:dev-php-fpm-wp-202607
+
+  nginx:
+    build:
+      context: nginx
+      dockerfile: ./Dockerfile
+    image: dvc-wordpress:dev-php-fpm-wp-nginx-202607

@@ -1,0 +1,33 @@
+name: php-apache-https
+services:
+  php-apache-https:
+    image: dvc-wordpress:php-apache-https-202607
+    container_name: php-apache-https
+    hostname: ${HTTPS_HOST:-www.dev.internal}
+    tty: true
+    user: ${USER_UID:-1000}:${USER_GID:-1000}
+    networks:
+      dvc-net:
+    volumes:
+      - type: volume
+        source: workspace-data
+        target: /home/node/workspace
+      - type: volume
+        source: php-apache-data
+        target: /var/www
+
+# 次のリソースは ../../compose.yaml による開発コンテナ起動で用意されている前提
+networks:
+  dvc-net:
+    name: dvc-wordpress-net
+    external: true
+
+volumes:
+  # 次のリソースは ../../compose.yaml による開発コンテナ起動で用意されている前提
+  workspace-data:
+    name: dvc-wordpress-home-node-workspace-data
+    external: true
+  # 次のリソースは ../php-apache/compose.yaml によるコンテナ起動で用意されている前提
+  php-apache-data:
+    name: dvc-wordpress-php-apache-data
+    external: true

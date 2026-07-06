@@ -1,0 +1,47 @@
+name: dev-wp-fpm
+
+services:
+  dev-wp-fpm:
+    image: wordpress:php8.3-fpm
+    container_name: dev-wp-fpm
+    hostname: dev-wp-fpm
+    networks:
+      dvc-net:
+    volumes:
+      - wordpress-data:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST:-db:3306}
+      # これ以降については使用する dev-mariadb 用の環境変数に合わせて指定
+      WORDPRESS_DB_NAME: ${MARIADB_DATABASE:-wordpress}
+      WORDPRESS_DB_USER: ${MARIADB_USER:-dbuser001}
+      WORDPRESS_DB_PASSWORD: ${MARIADB_PASSWORD:-dbpass001}
+    depends_on:
+      - db
+
+  dev-wp-fpm-nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dvc-wordpress:dev-wp-fpm-nginx-202607
+    container_name: dev-wp-fpm-nginx
+    hostname: dev-wp-fpm-nginx
+    networks:
+      dvc-net:
+    volumes:
+      - type: volume
+        source: wordpress-data
+        target: /var/www/html
+        read_only: true
+      # Docker イメージの再ビルドをせずに Nginx の設定変更をしたい場合はバインドマウントを有効化
+      # - type: bind
+      #   source: ${LOCAL_WORKSPACE_FOLDER:-../..}/docker/dev-wp-fpm/etc_nginx_conf.d/default.conf
+      #   target: /etc/nginx/conf.d/default.conf
+    depends_on:
+      - dev-wp-fpm
+
+volumes:
+  wordpress-data:
+    name: dev-wp-fpm-wordpress-data
+
+include:
+  - ../dev-mariadb/compose.yaml

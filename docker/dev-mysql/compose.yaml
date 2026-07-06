@@ -1,0 +1,23 @@
+name: dev-mysql
+services:
+  db:
+    image: mysql:8.4
+    container_name: dev-mysql
+    hostname: dev-mysql
+    networks:
+      dvc-net:
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-php-apachepass001}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-wordpress}
+      MYSQL_USER: ${MYSQL_USER:-dbuser001}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-dbpass001}
+    healthcheck:
+      test: "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD"
+      start_interval: 1s
+      start_period: 10s
+      timeout: 1s
+      interval: 30s
+      retries: 10
+
+include:
+  - ../dev-common/compose-net-external.yaml
