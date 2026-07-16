@@ -1,0 +1,5 @@
+www.dev.internal {
+    # マウントした証明書と鍵のパスを指定
+    tls /etc/caddy/certs/certs/www.dev.internal.pem /etc/caddy/certs/private/www.dev.internal.key
+    reverse_proxy php-apache:80
+}

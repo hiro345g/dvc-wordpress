@@ -1,0 +1,26 @@
+name: dev-caddy-certs-nginx
+
+services:
+  # 証明書を流用したい Nginx サーバー
+  dev-caddy-certs-nginx:
+    image: dvc-wordpress:dev-nginx-https-202607
+    container_name: dev-caddy-certs-nginx
+    hostname: www.dev.internal
+    networks:
+      dvc-net:
+    volumes:
+      # FrankenPHP の自動生成データを読み取り専用 (ro) でマウント
+      - type: volume
+        source: caddy-data
+        target: /etc/nginx/certs/caddy-data
+        read_only: true
+      - type: bind
+        source: ${LOCAL_WORKSPACE_FOLDER:-../../..}/docker/dev-caddy-certs/nginx/nginx-https.conf
+        target: /tmp/nginx-https.conf
+
+volumes:
+  caddy-data:
+    external: true
+
+include:
+  - ../frankenphp/compose.yaml

@@ -1,0 +1,49 @@
+name: dev-caddy
+
+services:
+  dev-caddy:
+    build: .
+    image: dvc-wordpress:dev-caddy
+    container_name: dev-caddy
+    hostname: www.dev.internal
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    networks:
+      dvc-net:
+    ports:
+      - "127.0.0.1:80:80"
+      - "127.0.0.1:443:443"
+      - "127.0.0.1:443:443/udp"
+    volumes:
+      # mkcert で生成した証明書が格納されているボリュームをマウント
+      - type: volume
+        source: dvc-wordpress-mkcert-data
+        target: /etc/caddy/certs
+        read_only: true
+      - type: volume
+        source: caddy-data
+        target: /data
+      - type: volume
+        source: caddy-config
+        target: /config
+      # 設定ファイルをカスタマイズしたい場合に有効化
+      # - type: bind
+      #   source: ${LOCAL_WORKSPACE_FOLDER:-../..}/docker/dev-caddy/conf
+      #   target: /etc/caddy
+      # Caddy でサイトを公開したい場合に有効化
+      # - type: bind
+      #   source: ${LOCAL_WORKSPACE_FOLDER:-../..}/docker/dev-caddy/site
+      #   target: /srv
+
+volumes:
+  caddy-data:
+    name: dvc-wordpress-dev-caddy-data
+  caddy-config:
+    name: dvc-wordpress-dev-caddy-config
+  dvc-wordpress-mkcert-data:
+    name: dvc-wordpress-mkcert-data
+    external: true
+
+include:
+  - ../dev-common/compose-net-external.yaml
