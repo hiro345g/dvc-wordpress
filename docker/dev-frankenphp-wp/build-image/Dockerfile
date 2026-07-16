@@ -1,5 +1,11 @@
 FROM dunglas/frankenphp:1.12.4-php8.3-trixie
 
+# frankenphp trust info 実行時に必要
+RUN apt-get update \
+    && apt-get install -y libnss3-tools \
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/*
+
 RUN install-php-extensions \
     exif \
     gd \

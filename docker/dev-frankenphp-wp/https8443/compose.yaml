@@ -1,0 +1,12 @@
+name: dev-frankenphp-wp-https8443
+services:
+  dev-frankenphp-wp:
+    environment:
+      SERVER_NAME: https://dev-frankenphp-wp.dev.internal:8443
+    ports:
+      # ホストの 8443 ポートをコンテナの 8443 ポートにマッピング
+      - "127.0.0.1:8443:8443"
+
+include:
+  - ../../dev-common/compose-db.yaml
+  - ../https/compose.yaml

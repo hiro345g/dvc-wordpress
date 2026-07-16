@@ -2,6 +2,7 @@ name: dev-frankenphp-wp-volume
 
 services:
   dev-frankenphp-wp:
+    hostname: dev-frankenphp-wp.dev.internal
     entrypoint: ["sleep", "infinity"]
     volumes:
       - type: volume
