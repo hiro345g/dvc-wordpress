@@ -1,6 +1,9 @@
 name: dvc-wordpress
 
 services:
+  dvc-wordpress:
+    hostname: ${HTTPS_HOST:-www.dev.internal}
+
   nginx-proxy-https:
     image: nginx:alpine
     container_name: nginx-proxy-https
