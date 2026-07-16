@@ -1,0 +1,18 @@
+name: dev-nginx-https
+
+services:
+  dev-nginx-https:
+    build:
+      context: ../..
+      dockerfile: ./docker/dev-nginx-https/Dockerfile
+    # base image nginx:1.31.2-trixie
+    image: dvc-wordpress:dev-nginx-https-202607
+    container_name: nginx-proxy-https
+    hostname: www.dev.internal
+    networks:
+      dvc-net:
+    ports:
+      - "127.0.0.1:443:443"
+
+include:
+  - ../dev-common/compose-net-external.yaml

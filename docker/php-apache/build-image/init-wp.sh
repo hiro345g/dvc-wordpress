@@ -12,9 +12,13 @@ WORK_DIR=${WEB_ROOT_DIR:-/var/www/html}
 cd "${WORK_DIR}" || exit 1;
 
 # WordPress のダウンロード
-wp core download --locale=ja
-# バージョンを指定する場合は上を無効化して、次の行を有効化すること。
-# wp core download --version=7.0.0 --locale=ja
+if [ "${WP_DL}" = "FALSE" ]; then
+    :
+else
+    wp core download --locale=ja
+    # バージョンを指定する場合は上を無効化して、次の行を有効化すること。
+    # wp core download --version=7.0.0 --locale=ja
+fi
 
 # 設定のリセット
 if [ "${WP_RESET}" = "TRUE" ]; then
