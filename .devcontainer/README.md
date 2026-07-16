@@ -9,16 +9,17 @@ Dev Container に関係するファイルについて、説明します。
 ```text
 dvc-wordpress/
 ├── .devcontainer/
-│   ├── devcontainer.json   # Dev Container用設定ファイル
-│   ├── README.md           # このファイル
-│   ├── sample.env          # 環境変数設定ファイルのサンプル
+│   ├── devcontainer.json           # Dev Container用設定ファイル
+│   ├── README.md                   # このファイル
+│   ├── sample.env                  # 環境変数設定ファイルのサンプル
 │   └── script/
-│       ├── init.sh         # Dev Container 初期化スクリプト
-│       ├── db_dump.sh      # MariaDB のバックアップ取得用スクリプト
-│       ├── db_restore.sh   # MariaDB のバックアップをリストアするスクリプト
-│       └── php-apache/     # Dev Container 利用時の php-apache 用スクリプト
-├── compose.yaml             # Dev Container を起動するための Docker Compose ファイル
-└── workspace_share/         # 開発コンテナーとホストで共有するフォルダ
+│       ├── php-apache/             # Dev Container 利用時の php-apache 用スクリプト
+│       ├── db_dump.sh              # MariaDB のバックアップ取得用スクリプト
+│       ├── db_restore.sh           # MariaDB のバックアップをリストアするスクリプト
+│       ├── post_create_command.sh  # Dev Container 初期化スクリプト
+│       └── post_start_command.sh   # Dev Container 開始後に実行されるスクリプト
+├── compose.yaml                     # Dev Container を起動するための Docker Compose ファイル
+└── workspace_share/                 # 開発コンテナーとホストで共有するフォルダ
 ```
 
 これ以降、`dvc-wordpress` フォルダを `${PROJECT_DIR}` と表記します。
@@ -27,7 +28,8 @@ dvc-wordpress/
 
 - `devcontainer.json`: Dev Container の設定ファイルです。
   - `LOCAL_WORKSPACE_FOLDER` 環境変数で、ローカルマシンのワークスペースフォルダのパスをコンテナに渡します。
-- `script/init.sh`: Dev Container の初期化時に実行されるスクリプトです。
+- `script/post_create_command.sh`: Dev Container の初期化時に実行されるスクリプトです。
+- `script/post_start_command.sh`: Dev Container の開始後に実行されるスクリプトです。
 - `script/php-apache/`: `php-apache` 環境を Dev Container から操作するためのスクリプト群です。`start.sh` と `stop.sh` があります。
 
 ## compose.yaml

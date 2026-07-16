@@ -1,5 +1,5 @@
 #!/bin/sh
-echo "$(date '+%Y-%m-%dT%H:%M:%S+09:00') init" >> /home/node/workspace/init.log
+echo "$(date '+%Y-%m-%dT%H:%M:%S+09:00') $0" >> /home/node/workspace/init.log
 
 #
 # `mise -y use --global php@8.5.30` 実行など調整したいとき

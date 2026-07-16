@@ -1,0 +1,14 @@
+name: dev-apache-https
+services:
+  dev-apache-https:
+    # base image httpd:2.4.68-trixie
+    image: dvc-wordpress:dev-apache-https-202607
+    container_name: dev-apache-https
+    hostname: www.dev.internal
+    networks:
+      dvc-net:
+    ports:
+      - "127.0.0.1:443:443"
+
+include:
+  - ../dev-common/compose-net-external.yaml

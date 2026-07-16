@@ -7,7 +7,8 @@
   "remoteUser": "node",
   "shutdownAction": "none",
   "workspaceFolder": "/home/node/workspace",
-  "postCreateCommand": "sh /script/init.sh",
+  "postCreateCommand": "sh /script/post_create_command.sh",
+  "postStartCommand": "sh /script/post_start_command.sh",
   "remoteEnv": {
     "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
   },
