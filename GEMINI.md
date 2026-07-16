@@ -314,7 +314,8 @@ dvc-wordpress/
 ├── .devcontainer/
 │   ├── devcontainer.json        # Dev Container用設定ファイル
 │   └── script/
-│       ├── init.sh               # Dev Container 初期化スクリプト
+│       ├── post_create_command.sh # Dev Container 初期化スクリプト
+│       └── post_start_command.sh  # Dev Container 開始後に実行されるスクリプト
 │       └── php-apache/           # Dev Container 利用時の php-apache 用スクリプト
 │           ├── start.sh
 │           └── stop.sh
