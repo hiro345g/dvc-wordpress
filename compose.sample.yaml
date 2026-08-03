@@ -3,7 +3,7 @@ name: dvc-wordpress
 # これを ./compose.yaml へコピーして使用すること
 include:
   - ./compose-http.yaml
-  # compose-https.yaml を有効化する場合は、`php-apache-https/README.md` の内容にしたがい dvc-wordpress:php-apache-https イメージを用意してからにすること
+  # compose-https.yaml を有効化する場合は、`php-apache-https/README.md` の内容にしたがい dvc-wordpress:php-apache-202607-https イメージを用意してからにすること
   # - ./compose-https.yaml
   # compose-https-nginx.yaml を有効化する場合は、`mkcert/README.md` の内容にしたがい SSL 用鍵ファイルを `mkcert/backup/` に用意してからにすること
   # - ./compose-https-nginx.yaml

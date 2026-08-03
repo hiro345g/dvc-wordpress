@@ -1,4 +1,5 @@
 name: php-apache-core
+
 services:
   php-apache:
     image: dvc-wordpress:php-apache-202607
@@ -19,7 +20,7 @@ services:
       - type: bind
         source: ${LOCAL_WORKSPACE_FOLDER:-../../..}/workspace_share/
         target: /share/
-      # dvc-wordpress:php-apache イメージで使う PHP や Apache2 の設定を変更したい場合は、必要なファイルを用意してから上記のバインドマウントを有効化
+      # dvc-wordpress:php-apache-202607 イメージで使う PHP や Apache2 の設定を変更したい場合は、必要なファイルを用意してから上記のバインドマウントを有効化
 
   php-apache-db:
     # MariaDB 10.6以上に対応

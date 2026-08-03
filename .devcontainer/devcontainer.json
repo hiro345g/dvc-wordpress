@@ -43,13 +43,9 @@
       },
       "extensions": [
         // ---- devcontainer feature php
-        "xdebug.php-debug",
-        "bmewburn.vscode-intelephense-client",
         "xdebug.php-pack",
-        "devsense.phptools-vscode",
         // ---- dvc
         "dbaeumer.vscode-eslint",
-        "vscode-icons-team.vscode-icons",
         "esbenp.prettier-vscode",
         "oderwat.indent-rainbow",
         "eamodio.gitlens",

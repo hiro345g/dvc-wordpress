@@ -35,7 +35,6 @@ dvc-worpdress は、`Docker` と `Dev Container` により、OS に依存しな�
 
 開発を始める前に、お使いの PC に以下のツールがインストールされている必要があります。
 
-- [Node.js](https://nodejs.org/ja/) (開発コンテナー用 Docker イメージのビルドに `npm exec` コマンドを使用するため)
 - `Docker`
   - [Docker Engine](https://docs.docker.com/engine/)
   - [Docker Compose](https://docs.docker.com/compose/)
@@ -49,13 +48,17 @@ dvc-worpdress は、`Docker` と `Dev Container` により、OS に依存しな�
 - [Docker DX](https://marketplace.com/items?itemName=docker.docker)
 - [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
+開発コンテナー用 Docker イメージのビルドに `npm exec` コマンドを使用する場合は次も必要です。
+
+- [Node.js](https://nodejs.org/ja/) )
+
 ### 2.2. 開発コンテナーの実行環境構築
 
 以下の手順で開発コンテナーの実行環境を構築します。
 
 1. リポジトリをクローン
 2. 開発コンテナー用イメージ `dvc-wordpress:202607` のビルド
-3. WordPress 用イメージ `dvc-wordpress:php-apache` のビルド
+3. WordPress 用イメージ `dvc-wordpress:php-apache-202607` のビルド
 4. 使用する Docker オブジェクトの初期化
 
 リポジトリから、dvc-wordpress フォルダを取得するには、次のようにします。
@@ -67,13 +70,19 @@ cd dvc-wordpress
 
 ここでの作業は `dvc-wordpress` フォルダをカレントとしてコマンドを実行します。なお、これ以降、`dvc-wordperss` を `${PROJECT_DIR}` と表記します。
 
-開発コンテナー用イメージ `dvc-wordpress:202607` のビルドをするには、`build-image/build.sh` を実行します。
+まず、Docker Compose の設定ファイルを用意します。プロジェクトルートにある `compose.sample.yaml` をコピーして `compose.yaml` を作成してください。
+
+```bash
+cp compose.sample.yaml compose.yaml
+```
+
+それから、開発コンテナー用イメージ `dvc-wordpress:202607` のビルドをするために、`build-image/build.sh` を実行します。
 
 ```bash
 bash ./build-image/build.sh
 ```
 
-WordPress 用イメージ `dvc-wordpress:php-apache` のビルドをするには、`php-apache/build-image/build.sh` を実行します。
+続いて、WordPress 用イメージ `dvc-wordpress:php-apache-202607` のビルドをするために、`php-apache/build-image/build.sh` を実行します。
 
 ```bash
 bash ./docker/php-apache/build-image/build.sh

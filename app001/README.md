@@ -88,7 +88,7 @@ docker compose -p dvc-wordpress exec dvc-wordpress \
 ```bash
 # 認証ファイルをコピー
 docker compose -p dvc-wordpress exec dvc-wordpress \
-    cp -r /dvc-wordpress/app001/resources/dot.htpasswd \
+    cp -r /dvc-wordpress/app001/resources/dev/dot.htpasswd \
         /home/node/workspace/php/.htpasswd
 
 # パーミッションを設定

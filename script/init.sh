@@ -6,7 +6,7 @@ BASE_DIR=$(cd "${SCRIPT_DIR}/.." || exit 1;pwd)
 # shellcheck disable=SC2068
 bash "${BASE_DIR}/docker/dvc/build-image/build.sh" $@
 
-# WordPress 用イメージ `dvc-wordpress:php-apache` のビルド
+# WordPress 用イメージ `dvc-wordpress:php-apache-202607` のビルド
 # shellcheck disable=SC2068
 bash "${BASE_DIR}/docker/php-apache/build-image/build.sh" $@
 
