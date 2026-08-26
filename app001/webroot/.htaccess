@@ -20,7 +20,7 @@ RewriteRule ^app001/ - [L]
 # RewriteRule ^app001/.* - [L]
 # ---- ここまで
 
-# さくらインターネット用設定（既存）
+# さくらインターネット用設定（さくらインターネットの共用サーバを使っている場合のみ必要）
 RewriteCond %{HTTP_HOST} ^(www\.)?[^.]+\.sakura\.ne\.jp$ [NC]
 RewriteRule .* - [NC,R=404,L]
 </IfModule>
