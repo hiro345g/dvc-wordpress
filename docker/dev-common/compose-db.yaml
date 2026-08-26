@@ -1,10 +1,10 @@
 services:
   dev-adminer:
     depends_on:
-      db:
+      dev-db:
         condition: service_healthy
 
-  db:
+  dev-db:
     tmpfs:
       - /var/lib/mysql
     healthcheck:

@@ -8,7 +8,7 @@ services:
     networks:
       dvc-net:
     environment:
-      ADMINER_DEFAULT_SERVER: ${ADMINER_DEFAULT_SERVER:-db}
+      ADMINER_DEFAULT_SERVER: ${ADMINER_DEFAULT_SERVER:-dev-db}
 
 include:
   - ../dev-common/compose-net-external.yaml

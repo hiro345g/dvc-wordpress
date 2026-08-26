@@ -1,6 +1,6 @@
 name: dev-mysql
 services:
-  db:
+  dev-db:
     image: mysql:8.4
     container_name: dev-mysql
     hostname: dev-mysql

@@ -1,6 +1,6 @@
 name: dev-mariadb
 services:
-  db:
+  dev-db:
     image: mariadb:12.3.2-noble
     container_name: dev-mariadb
     hostname: dev-mariadb
