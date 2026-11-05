@@ -1,0 +1,3 @@
+conf/certs/server.crt
+conf/certs/server.key
+conf/httpd-ssl.conf

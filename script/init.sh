@@ -2,15 +2,17 @@
 SCRIPT_DIR=$(dirname "$0")
 BASE_DIR=$(cd "${SCRIPT_DIR}/.." || exit 1;pwd)
 
-# 開発コンテナー用イメージ `dvc-wordpress:php-202606` のビルド
-bash "${BASE_DIR}/build-image/build.sh"
+# 開発コンテナー用イメージ `dvc-wordpress:202611` のビルド
+# shellcheck disable=SC2068
+bash "${BASE_DIR}/docker/dvc/build-image/build.sh" $@
 
-# WordPress 用イメージ `dvc-wordpress:php-apache` のビルド
-bash "${BASE_DIR}/php-apache/build-image/build.sh"
+# WordPress 用イメージ `dvc-wordpress:php-apache-202611` のビルド
+# shellcheck disable=SC2068
+bash "${BASE_DIR}/docker/php-apache/build-image/build.sh" $@
 
-# ビルドが成功したら、使用する Docker オブジェクトの初期化
-# Docker オブジェクトがすでにある場合は初期化処理は自動スキップ
-bash "${BASE_DIR}/php-apache/script/up.sh"
+# ビルドが成功したら、使用する Docker ボリュームの初期化
+# Docker ボリュームがすでにある場合は初期化処理は自動スキップ
+bash "${BASE_DIR}/docker/php-apache/script/up.sh"
 
 # 起動の確認
 if docker compose ls | grep php-apache > /dev/null; then
@@ -22,4 +24,4 @@ else
 fi
 
 # 確認ができたら、php-apache プロジェクトで起動したコンテナーを破棄
-bash "${BASE_DIR}/php-apache/script/down.sh"
+bash "${BASE_DIR}/docker/php-apache/script/down.sh"

@@ -1,0 +1,18 @@
+name: dev-frankenphp-wp-volume
+
+services:
+  dev-frankenphp-wp:
+    hostname: dev-frankenphp-wp.dev.internal
+    entrypoint: ["sleep", "infinity"]
+    volumes:
+      - type: volume
+        source: workspace-data
+        target: /home/node/workspace
+
+volumes:
+  workspace-data:
+    name: dvc-wordpress-home-node-workspace-data
+    external: true
+
+include:
+  - ../dev-frankenphp-wp/compose.yaml

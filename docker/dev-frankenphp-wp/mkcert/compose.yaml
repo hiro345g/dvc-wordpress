@@ -1,0 +1,24 @@
+name: dev-frankenphp-wp-mkcert
+
+services:
+  dev-frankenphp-wp:
+    hostname: www.dev.internal
+    volumes:
+      # mkcert で生成した証明書が格納されているボリュームをマウント
+      - type: volume
+        source: dvc-wordpress-mkcert-data
+        target: /etc/caddy/certs
+        read_only: true
+      # Caddyfile をマウント
+      - type: bind
+        source: ${LOCAL_WORKSPACE_FOLDER:-../../..}/docker/dev-frankenphp-wp/mkcert/Caddyfile
+        target: /etc/frankenphp/Caddyfile
+
+volumes:
+  dvc-wordpress-mkcert-data:
+    name: dvc-wordpress-mkcert-data
+    external: true
+
+include:
+  - ../../dev-common/compose-db.yaml
+  - ../https/compose.yaml

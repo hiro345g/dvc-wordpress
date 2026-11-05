@@ -1,0 +1,4 @@
+networks:
+  dvc-net:
+    name: dvc-wordpress-net
+    external: false

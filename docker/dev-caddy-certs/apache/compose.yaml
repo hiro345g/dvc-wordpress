@@ -1,0 +1,26 @@
+name: dev-caddy-certs-apache
+
+services:
+  # 証明書を流用したい apache サーバー
+  dev-caddy-certs-apache:
+    image: dvc-wordpress:dev-apache-https-202611
+    container_name: dev-caddy-certs-apache
+    hostname: ${SERVER_NAME:-www.dev.internal}
+    networks:
+      dvc-net:
+    volumes:
+      # FrankenPHP の自動生成データを読み取り専用 (ro) でマウント
+      - type: volume
+        source: caddy-data
+        target: /usr/local/apache2/certs/caddy-data
+        read_only: true
+      - type: bind
+        source: ${LOCAL_WORKSPACE_FOLDER:-../../..}/docker/dev-caddy-certs/apache/httpd-ssl.conf
+        target: /usr/local/apache2/conf/extra/httpd-ssl.conf
+
+volumes:
+  caddy-data:
+    external: true
+
+include:
+  - ../frankenphp/compose.yaml

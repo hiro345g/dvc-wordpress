@@ -1,0 +1,14 @@
+name: dev-adminer
+
+services:
+  dev-adminer:
+    image: adminer:6.3.0-standalone
+    container_name: dev-adminer
+    hostname: dev-adminer
+    networks:
+      dvc-net:
+    environment:
+      ADMINER_DEFAULT_SERVER: ${ADMINER_DEFAULT_SERVER:-dev-db}
+
+include:
+  - ../dev-common/compose-net-external.yaml

@@ -9,14 +9,21 @@ Dev Container に関係するファイルについて、説明します。
 ```text
 dvc-wordpress/
 ├── .devcontainer/
-│   ├── devcontainer.json        # Dev Container用設定ファイル
-│   ├── README.md                # このファイル
-│   ├── sample.env               # 環境変数設定ファイルのサンプル
+│   ├── devcontainer.json           # Dev Container用設定ファイル
+│   ├── README.md                   # このファイル
+│   ├── sample.env                  # 環境変数設定ファイルのサンプル
 │   └── script/
-│       ├── init.sh              # Dev Container 初期化スクリプト
-│       └── php-apache/          # Dev Container 利用時の php-apache 用スクリプト
-├── compose.yaml                  # Dev Container を起動するための Docker Compose ファイル
-└── workspace_share/              # 開発コンテナーとホストで共有するフォルダ
+│       ├── php-apache/             # Dev Container 利用時の php-apache 用スクリプト
+│       ├── db_dump.sh              # MariaDB のバックアップ取得用スクリプト
+│       ├── db_restore.sh           # MariaDB のバックアップをリストアするスクリプト
+│       ├── post_create_command.sh  # Dev Container 初期化スクリプト
+│       └── post_start_command.sh   # Dev Container 開始後に実行されるスクリプト
+├── compose-http.yaml                # 開発コンテナ、php-apache の両方を連携させて起動するための Docker Compose ファイル
+├── compose-https-nginx.yaml         # 開発コンテナ、php-apache、Nginx リバースプロキシを連携させて起動するときに使う Docker Compose ファイル
+├── compose-https.yaml               # 開発コンテナ、php-apache、php-apache-https を連携させて起動するときに使う Docker Compose ファイル
+├── compose.sample.yaml              # Dev Container を起動するための Docker Compose ファイルのサンプル
+├── compose.yaml                     # Dev Container を起動するための Docker Compose ファイル
+└── workspace_share/                 # 開発コンテナーとホストで共有するフォルダ
 ```
 
 これ以降、`dvc-wordpress` フォルダを `${PROJECT_DIR}` と表記します。
@@ -25,7 +32,8 @@ dvc-wordpress/
 
 - `devcontainer.json`: Dev Container の設定ファイルです。
   - `LOCAL_WORKSPACE_FOLDER` 環境変数で、ローカルマシンのワークスペースフォルダのパスをコンテナに渡します。
-- `script/init.sh`: Dev Container の初期化時に実行されるスクリプトです。
+- `script/post_create_command.sh`: Dev Container の初期化時に実行されるスクリプトです。
+- `script/post_start_command.sh`: Dev Container の開始後に実行されるスクリプトです。開発コンテナの開始後に、HTTPS対応リバースプロキシサービス (`dev-nginx-https`) をバックグラウンドで自動起動する処理が含まれています。
 - `script/php-apache/`: `php-apache` 環境を Dev Container から操作するためのスクリプト群です。`start.sh` と `stop.sh` があります。
 
 ## compose.yaml
@@ -33,12 +41,16 @@ dvc-wordpress/
 `${PROJECT_DIR}/.devcontainer/devcontainer.json` では `${PROJECT_DIR}/compose.yaml` を参照しています。これについて説明します。
 
 - `compose.yaml`: Dev Container を起動するための Docker Compose ファイルです。
-  - `dvc-wordpress` サービス: 開発コンテナーの本体です。
-  - `volumes` の設定で `${PROJECT_DIR:-.}/php-apache` という記述があります。これは、ホストマシンの `php-apache` フォルダをコンテナ内の `/php-apache` にマウントするための設定です。`${PROJECT_DIR:-.}` の部分は、環境変数 `PROJECT_DIR` が設定されていればその値を、未設定の場合はカレントフォルダ (`.`) をプロジェクトのルートパスとして使用します。
+  - `include` で `compose-http.yaml` をインクルードしています。
+
+`compose-http.yaml` がサービス定義の実体です。
+
+- `dvc-wordpress` サービス: 開発コンテナーの本体です。
+- `volumes` の設定で `${PROJECT_DIR:-.}/docker/php-apache` という記述があります。これは、ホストマシンの `docker/php-apache` フォルダをコンテナ内の `/php-apache` にマウントするための設定です。`${PROJECT_DIR:-.}` の部分は、環境変数 `PROJECT_DIR` が設定されていればその値を、未設定の場合はカレントフォルダ (`.`) をプロジェクトのルートパスとして使用します。
 
 ## 環境変数
 
-`${PROJECT_DIR}/compose.yaml` では、以下の環境変数が使用されます。これらの変数を設定するには、`${PROJECT_DIR}` フォルダに `sample.env` をコピーして `.env` というファイル名で保存し、そのファイルに必要な値を記述します。
+`${PROJECT_DIR}/compose-http.yaml` では、以下の環境変数が使用されます。これらの変数を設定するには、`${PROJECT_DIR}` フォルダに `sample.env` をコピーして `.env` というファイル名で保存し、そのファイルに必要な値を記述します。
 
 - `PROJECT_DIR`: プロジェクトのルートフォルダのパスを指定します。未設定の場合は、`compose.yaml` があるフォルダ（つまり `${PROJECT_DIR}/`）からの相対パスで解釈されます。
 - `SHARE_DIR`: ホストとコンテナで共有するフォルダのパスを指定します。未設定の場合は、`${PROJECT_DIR}/workspace_share` フォルダが使用されます。
@@ -77,7 +89,7 @@ services:
     volumes:
       # 略
       - type: bind
-        source: /home/user001/workspace/dvc-wordpress/php-apache
+        source: /home/user001/workspace/dvc-wordpress/docker/php-apache
         target: /php-apache
       - type: bind
         source: /home/user001/workspace/workspace_share

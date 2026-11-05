@@ -1,0 +1,20 @@
+name: dev-wp-apache
+
+services:
+  dev-wp-apache:
+    image: wordpress:php8.3-apache
+    container_name: dev-wp-apache
+    hostname: dev-wp-apache
+    networks:
+      dvc-net:
+    environment:
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST:-dev-db:3306}
+      # これ以降については使用する dev-mariadb 用の環境変数に合わせて指定
+      WORDPRESS_DB_NAME: ${MARIADB_DATABASE:-wordpress}
+      WORDPRESS_DB_USER: ${MARIADB_USER:-dbuser001}
+      WORDPRESS_DB_PASSWORD: ${MARIADB_PASSWORD:-dbpass001}
+    depends_on:
+      - dev-db
+
+include:
+  - ../dev-mariadb/compose.yaml

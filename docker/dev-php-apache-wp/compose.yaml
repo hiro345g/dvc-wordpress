@@ -1,0 +1,14 @@
+name: dev-php-apache-wp
+
+services:
+  dev-php-apache-wp:
+    build: .
+    image: dvc-wordpress:dev-php-apache-wp-202611
+    container_name: dev-php-apache-wp
+    hostname: dev-php-apache-wp
+    tty: true
+    networks:
+      dvc-net:
+
+include:
+  - ../dev-common/compose-db.yaml

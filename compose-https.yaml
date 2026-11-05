@@ -1,0 +1,20 @@
+name: dvc-wordpress
+
+# ./compose.yaml で include される前提のファイルなので、
+# networks, volumes はここでは定義していない
+services:
+  php-apache-https:
+    image: dvc-wordpress:php-apache-https-202611
+    container_name: php-apache-https
+    hostname: ${HTTPS_HOST:-www.dev.internal}
+    tty: true
+    user: ${USER_UID:-1000}:${USER_GID:-1000}
+    networks:
+      dvc-net:
+    volumes:
+      - type: volume
+        source: workspace-data
+        target: /home/node/workspace
+      - type: volume
+        source: php-apache-data
+        target: /var/www

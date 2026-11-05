@@ -1,0 +1,20 @@
+name: dev-caddy-certs
+
+services:
+  # 証明書を自動生成する FrankenPHP
+  dev-caddy-certs:
+    image: dvc-wordpress:dev-frankenphp-wp-202611
+    container_name: dev-caddy-certs
+    networks:
+      dvc-net:
+    volumes:
+      - caddy-data:/data # Caddy のデータ（証明書を含む）をボリュームに保存
+    environment:
+      SERVER_NAME: ${SERVER_NAME:-www.dev.internal}
+
+volumes:
+  caddy-data:
+    name: dvc-wordpress-caddy-data
+
+include:
+  - ../../dev-common/compose-net-external.yaml

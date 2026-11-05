@@ -7,7 +7,8 @@
   "remoteUser": "node",
   "shutdownAction": "none",
   "workspaceFolder": "/home/node/workspace",
-  "postCreateCommand": "sh /script/init.sh",
+  "postCreateCommand": "sh /script/post_create_command.sh",
+  "postStartCommand": "sh /script/post_start_command.sh",
   "remoteEnv": {
     "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
   },
@@ -42,13 +43,9 @@
       },
       "extensions": [
         // ---- devcontainer feature php
-        "xdebug.php-debug",
-        "bmewburn.vscode-intelephense-client",
         "xdebug.php-pack",
-        "devsense.phptools-vscode",
         // ---- dvc
         "dbaeumer.vscode-eslint",
-        "vscode-icons-team.vscode-icons",
         "esbenp.prettier-vscode",
         "oderwat.indent-rainbow",
         "eamodio.gitlens",

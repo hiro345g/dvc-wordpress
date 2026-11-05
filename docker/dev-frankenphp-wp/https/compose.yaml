@@ -1,0 +1,13 @@
+name: dev-frankenphp-wp-https
+services:
+  dev-frankenphp-wp:
+    image: dvc-wordpress:dev-frankenphp-wp-202611
+    container_name: dev-frankenphp-wp
+    hostname: dev-frankenphp-wp.dev.internal
+    networks:
+      dvc-net:
+    environment:
+      SERVER_NAME: dev-frankenphp-wp.dev.internal
+
+include:
+  - ../../dev-common/compose-db.yaml
