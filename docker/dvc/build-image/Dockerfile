@@ -1,6 +1,6 @@
-FROM hiro345g/dvc:202606
-# hiro345g/dvc:202606 イメージ作成用の Dockerfile, devcontainer.json は下記を参照すること
-# https://github.com/hiro345g/dvc/tree/v202606/dvc/build
+FROM hiro345g/dvc:202610
+# hiro345g/dvc:202610 イメージ作成用の Dockerfile, devcontainer.json は下記を参照すること
+# https://github.com/hiro345g/dvc/tree/v202610/dvc/build
 
 RUN apt-get update && apt-get -y upgrade
 

@@ -2,11 +2,11 @@
 SCRIPT_DIR=$(dirname "$0")
 BASE_DIR=$(cd "${SCRIPT_DIR}/.." || exit 1;pwd)
 
-# 開発コンテナー用イメージ `dvc-wordpress:202607` のビルド
+# 開発コンテナー用イメージ `dvc-wordpress:202611` のビルド
 # shellcheck disable=SC2068
 bash "${BASE_DIR}/docker/dvc/build-image/build.sh" $@
 
-# WordPress 用イメージ `dvc-wordpress:php-apache-202607` のビルド
+# WordPress 用イメージ `dvc-wordpress:php-apache-202611` のビルド
 # shellcheck disable=SC2068
 bash "${BASE_DIR}/docker/php-apache/build-image/build.sh" $@
 

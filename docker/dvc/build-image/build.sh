@@ -1,5 +1,5 @@
 #! /bin/sh
-IMAGE_NAME=dvc-wordpress:202607
+IMAGE_NAME=dvc-wordpress:202611
 SCRIPT_DIR=$(dirname "$0")
 BUILD_DEVCON_DIR=$(cd "${SCRIPT_DIR}" || exit 1;pwd)
 PATH=${PATH}:${NPM_CONFIG_PREFIX}/bin

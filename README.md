@@ -57,8 +57,8 @@ dvc-worpdress は、`Docker` と `Dev Container` により、OS に依存しな�
 以下の手順で開発コンテナーの実行環境を構築します。
 
 1. リポジトリをクローン
-2. 開発コンテナー用イメージ `dvc-wordpress:202607` のビルド
-3. WordPress 用イメージ `dvc-wordpress:php-apache-202607` のビルド
+2. 開発コンテナー用イメージ `dvc-wordpress:202611` のビルド
+3. WordPress 用イメージ `dvc-wordpress:php-apache-202611` のビルド
 4. 使用する Docker オブジェクトの初期化
 
 リポジトリから、dvc-wordpress フォルダを取得するには、次のようにします。
@@ -76,13 +76,13 @@ cd dvc-wordpress
 cp compose.sample.yaml compose.yaml
 ```
 
-それから、開発コンテナー用イメージ `dvc-wordpress:202607` のビルドをするために、`build-image/build.sh` を実行します。
+それから、開発コンテナー用イメージ `dvc-wordpress:202611` のビルドをするために、`build-image/build.sh` を実行します。
 
 ```bash
-bash ./build-image/build.sh
+bash ./docker/dvc/build-image/build.sh
 ```
 
-続いて、WordPress 用イメージ `dvc-wordpress:php-apache-202607` のビルドをするために、`php-apache/build-image/build.sh` を実行します。
+続いて、WordPress 用イメージ `dvc-wordpress:php-apache-202611` のビルドをするために、`php-apache/build-image/build.sh` を実行します。
 
 ```bash
 bash ./docker/php-apache/build-image/build.sh
@@ -287,8 +287,8 @@ OK
 Checking Composer version: OK
 Composer version: 2.9.5
 Checking Composer and its dependencies for vulnerabilities: OK
-PHP version: 8.3.31
-PHP binary path: /home/node/.local/share/mise/installs/php/8.3.31/bin/php
+PHP version: 8.3.36
+PHP binary path: /home/node/.local/share/mise/installs/php/8.3.36/bin/php
 OpenSSL version: OpenSSL 3.5.4 30 Sep 2025
 curl version: 8.14.1 libz 1.3.1 brotli brotli/1.1.0 zstd supported ssl OpenSSL/3.5.4 HTTP 1.0, 1.1, 2, 3
 zip: extension present, unzip present, 7-Zip not available
@@ -365,11 +365,11 @@ WordPress 7.0 の場合は次のようになります。
 
 - Docker Image:
   - php:8.3-apache
-  - php:8.3.31
-  - mariadb:12.3.2-noble
-  - adminer:5.4.2-standalone
-  - dvc-wordpress:202607
-  - hiro345g/dvc:202606
-- mise: php@8.3.31
+  - php:8.3.36
+  - mariadb:12.3.3-noble
+  - adminer:6.3.0-standalone
+  - dvc-wordpress:202611
+  - hiro345g/dvc:202610
+- mise: php@8.3.36
 - xdebug-3.5.3
 - imagick-3.8.1

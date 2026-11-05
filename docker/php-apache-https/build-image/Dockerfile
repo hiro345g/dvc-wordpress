@@ -1,5 +1,5 @@
 # ../../phpa-apache/build-image/build.sh でイメージ作成後
-FROM dvc-wordpress:php-apache-202607
+FROM dvc-wordpress:php-apache-202611
 
 # カスタマイズ用ファイルのコピー
 COPY ./etc/ssl /etc/ssl

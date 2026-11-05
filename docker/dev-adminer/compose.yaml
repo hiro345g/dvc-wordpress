@@ -2,7 +2,7 @@ name: dev-adminer
 
 services:
   dev-adminer:
-    image: adminer:5.4.2-standalone
+    image: adminer:6.3.0-standalone
     container_name: dev-adminer
     hostname: dev-adminer
     networks:

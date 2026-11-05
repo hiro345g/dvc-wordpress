@@ -63,14 +63,14 @@ bash ./script/init.sh
 
 ### 3.4. 参考：手動での Docker イメージのビルドと初回セットアップ
 
-初めて開発コンテナーを起動する前に、開発コンテナー用イメージ (`dvc-wordpress:202607`) のビルドが必要です。
+初めて開発コンテナーを起動する前に、開発コンテナー用イメージ (`dvc-wordpress:202611`) のビルドが必要です。
 
 ```bash
 cd ${PROJECT_DIR}
 bash ./docker/dvc/build-image/build.sh
 ```
 
-また、`WordPress` 開発用のコンテナー向けの `Docker` イメージ `dvc-wordpress:php-apache-202607` をビルドします。ビルドには `docker/php-apache/build-image/build.sh` スクリプトを使用するのが主要な方法です。このビルドにより、以下の初期設定が自動的に行われた `Docker` イメージが用意できます。
+また、`WordPress` 開発用のコンテナー向けの `Docker` イメージ `dvc-wordpress:php-apache-202611` をビルドします。ビルドには `docker/php-apache/build-image/build.sh` スクリプトを使用するのが主要な方法です。このビルドにより、以下の初期設定が自動的に行われた `Docker` イメージが用意できます。
 
 - `Apache` の設定
 - `WordPress` サイトの初期化ができる環境

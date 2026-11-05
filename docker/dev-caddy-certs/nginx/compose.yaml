@@ -3,7 +3,7 @@ name: dev-caddy-certs-nginx
 services:
   # 証明書を流用したい Nginx サーバー
   dev-caddy-certs-nginx:
-    image: dvc-wordpress:dev-nginx-https-202607
+    image: dvc-wordpress:dev-nginx-https-202611
     container_name: dev-caddy-certs-nginx
     hostname: www.dev.internal
     networks:

@@ -2,7 +2,7 @@ name: dvc-wordpress-mkcert-build
 services: 
   dvc-wordpress-mkcert-build:
     build: .
-    image: dvc-wordpress:mkcert-202607
+    image: dvc-wordpress:mkcert-202611
     container_name: dvc-wordpress-mkcert-build
     hostname: dvc-wordpress-mkcert-build
     tty: true

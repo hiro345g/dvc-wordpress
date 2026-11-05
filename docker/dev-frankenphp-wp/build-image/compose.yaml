@@ -5,6 +5,6 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     # base image dunglas/frankenphp:1.12.4-php8.3-trixie
-    image: dvc-wordpress:dev-frankenphp-wp-202607
+    image: dvc-wordpress:dev-frankenphp-wp-202611
     container_name: dev-frankenphp-wp-build
     hostname: dev-frankenphp-wp-build

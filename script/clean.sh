@@ -11,15 +11,15 @@ EOS
 )
 
 list_image=$(cat <<EOS
-dvc-wordpress:dev-frankenphp-wp-202607
-dvc-wordpress:dev-php-apache-wp-202607
-dvc-wordpress:dev-php-fpm-wp-202607
-dvc-wordpress:dev-php-fpm-wp-nginx-202607
-dvc-wordpress:dev-wp-fpm-nginx-202607
-dvc-wordpress:mkcert-202607
-dvc-wordpress:php-apache-https-202607
-dvc-wordpress:php-apache-202607
-dvc-wordpress:202607
+dvc-wordpress:dev-frankenphp-wp-202611
+dvc-wordpress:dev-php-apache-wp-202611
+dvc-wordpress:dev-php-fpm-wp-202611
+dvc-wordpress:dev-php-fpm-wp-nginx-202611
+dvc-wordpress:dev-wp-fpm-nginx-202611
+dvc-wordpress:mkcert-202611
+dvc-wordpress:php-apache-https-202611
+dvc-wordpress:php-apache-202611
+dvc-wordpress:202611
 EOS
 )
 
@@ -39,8 +39,8 @@ fi
 
 echo "---- Commands to remove Docker images ----"
 for i in ${list_image}; do\
-    if docker volume ls | grep "${i}" > /dev/null; then
-        docker volume rm "${i}"
+    if docker image ls | grep "${i}" > /dev/null; then
+        docker image rm "${i}"
     else
         echo "not exists: ${i}"
     fi

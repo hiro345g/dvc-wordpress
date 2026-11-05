@@ -2,7 +2,7 @@ name: dev-php-fpm-wp
 
 services:
   dev-php-fpm-wp:
-    image: dvc-wordpress:dev-php-fpm-wp-202607
+    image: dvc-wordpress:dev-php-fpm-wp-202611
     container_name: dev-php-fpm-wp
     hostname: dev-php-fpm-wp
     volumes:
@@ -13,7 +13,7 @@ services:
       - dvc-net
 
   dev-php-fpm-wp-nginx:
-    image: dvc-wordpress:dev-php-fpm-wp-nginx-202607
+    image: dvc-wordpress:dev-php-fpm-wp-nginx-202611
     container_name: dev-php-fpm-wp-nginx
     hostname: dev-php-fpm-wp-nginx
     volumes:

@@ -5,10 +5,10 @@ services:
     build:
       context: php
       dockerfile: ./Dockerfile
-    image: dvc-wordpress:dev-php-fpm-wp-202607
+    image: dvc-wordpress:dev-php-fpm-wp-202611
 
   nginx:
     build:
       context: nginx
       dockerfile: ./Dockerfile
-    image: dvc-wordpress:dev-php-fpm-wp-nginx-202607
+    image: dvc-wordpress:dev-php-fpm-wp-nginx-202611

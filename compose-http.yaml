@@ -2,8 +2,8 @@ name: dvc-wordpress
 services:
   # 開発コンテナー
   dvc-wordpress:
-    # base image: hiro345g/dvc:202606
-    image: dvc-wordpress:202607
+    # base image: hiro345g/dvc:202610
+    image: dvc-wordpress:202611
     container_name: dvc-wordpress
     hostname: dvc-wordpress
     init: true

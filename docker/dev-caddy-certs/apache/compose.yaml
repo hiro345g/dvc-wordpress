@@ -3,7 +3,7 @@ name: dev-caddy-certs-apache
 services:
   # 証明書を流用したい apache サーバー
   dev-caddy-certs-apache:
-    image: dvc-wordpress:dev-apache-https-202607
+    image: dvc-wordpress:dev-apache-https-202611
     container_name: dev-caddy-certs-apache
     hostname: ${SERVER_NAME:-www.dev.internal}
     networks:

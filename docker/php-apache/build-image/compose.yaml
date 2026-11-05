@@ -6,7 +6,7 @@ services:
       args:
         USER_UID: ${USER_UID:-1000}
         USER_GID: ${USER_GID:-1000}
-    image: dvc-wordpress:php-apache-202607
+    image: dvc-wordpress:php-apache-202611
     container_name: php-apache-build
     hostname: php-apache-build
     tty: true

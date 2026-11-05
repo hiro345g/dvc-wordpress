@@ -1,7 +1,7 @@
 name: php-apache-https
 services:
   php-apache-https:
-    image: dvc-wordpress:php-apache-https-202607
+    image: dvc-wordpress:php-apache-https-202611
     container_name: php-apache-https
     hostname: ${HTTPS_HOST:-www.dev.internal}
     tty: true

@@ -62,7 +62,7 @@ sudo apt-get install -y --no-install-recommends \
         --with-zlib --disable-phpdbg --disable-cgi"; \
     cd ~; \
     eval "$(~/.local/bin/mise activate bash)"; \
-    ~/.local/bin/mise install -y -v php@8.3.31; \
+    ~/.local/bin/mise install -y -v php@8.3.36; \
 '
 
 # mise のグローバル設定ファイルの追加
@@ -71,7 +71,7 @@ if [ ! -e /home/node/.config/mise/ ]; then
 fi
 cat << EOS > /home/node/.config/mise/config.toml 
 [tools]
-php = "8.3.31"
+php = "8.3.36"
 
 [settings]
 # mise の php を使わない場合
@@ -96,7 +96,7 @@ if [ -e /tmp/pear ]; then sudo chown -R node /tmp/pear; else mkdir /tmp/pear; fi
 # Enable PHP extensions（`php -m` で表示されない組み込まれていないものを追加指定）
 /bin/bash -c '\
     eval "$(~/.local/bin/mise activate bash)"; \
-    PHP_INI_DIR="/home/node/.local/share/mise/installs/php/8.3.31/conf.d"; \
+    PHP_INI_DIR="/home/node/.local/share/mise/installs/php/8.3.36/conf.d"; \
     if [ ! -d "$PHP_INI_DIR" ]; then mkdir -p "$PHP_INI_DIR"; fi; \
     echo "zend_extension=opcache.so" | tee "$PHP_INI_DIR/opcache.ini"; \
     echo "zend_extension=xdebug.so" | tee "$PHP_INI_DIR/xdebug.ini"; \

@@ -22,7 +22,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: dvc-wordpress:dev-wp-fpm-nginx-202607
+    image: dvc-wordpress:dev-wp-fpm-nginx-202611
     container_name: dev-wp-fpm-nginx
     hostname: dev-wp-fpm-nginx
     networks:

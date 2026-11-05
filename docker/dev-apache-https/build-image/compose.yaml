@@ -5,6 +5,6 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     # base image httpd:2.4.68-trixie
-    image: dvc-wordpress:dev-apache-https-202607
+    image: dvc-wordpress:dev-apache-https-202611
     container_name: dev-apache-https-build
     hostname: dev-apache-https-build

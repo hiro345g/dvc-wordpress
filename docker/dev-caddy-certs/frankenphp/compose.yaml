@@ -3,7 +3,7 @@ name: dev-caddy-certs
 services:
   # 証明書を自動生成する FrankenPHP
   dev-caddy-certs:
-    image: dvc-wordpress:dev-frankenphp-wp-202607
+    image: dvc-wordpress:dev-frankenphp-wp-202611
     container_name: dev-caddy-certs
     networks:
       dvc-net:

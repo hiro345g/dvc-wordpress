@@ -1,7 +1,7 @@
 name: dev-frankenphp-wp
 services:
   dev-frankenphp-wp:
-    image: dvc-wordpress:dev-frankenphp-wp-202607
+    image: dvc-wordpress:dev-frankenphp-wp-202611
     container_name: dev-frankenphp-wp
     hostname: dev-frankenphp-wp
     networks:

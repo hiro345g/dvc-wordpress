@@ -1,7 +1,7 @@
 name: dvc-wordpress-mkcert
 services: 
   mkcert:
-    image: dvc-wordpress:mkcert-202607
+    image: dvc-wordpress:mkcert-202611
     container_name: dvc-wordpress-mkcert
     hostname: dvc-wordpress-mkcert
     tty: true
